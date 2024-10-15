@@ -1,0 +1,47 @@
+{
+  "name": "web",
+  "version": "0.0.1",
+  "type": "module",
+  "scripts": {
+    "dev": "pnpm with-env astro dev",
+    "start": "pnpm with-env astro dev",
+    "build": "pnpm with-env astro check && astro build",
+    "preview": "pnpm with-env astro build && wrangler dev",
+    "astro": "astro",
+    "deploy": "pnpm with-env astro build && wrangler deploy",
+    "with-env": "dotenv -e ../../.env --"
+  },
+  "dependencies": {
+    "@astrojs/check": "^0.9.4",
+    "@astrojs/cloudflare": "^11.1.0",
+    "@astrojs/react": "^3.6.2",
+    "@astrojs/tailwind": "^5.1.2",
+    "@t3-oss/env-core": "catalog:",
+    "@tanstack/react-query": "catalog:",
+    "@xystack/api": "workspace:*",
+    "@xystack/auth": "workspace:*",
+    "@xystack/db": "workspace:*",
+    "@xystack/ui": "workspace:*",
+    "@xystack/validators": "workspace:*",
+    "astro": "^4.16.2",
+    "hono": "catalog:",
+    "lucia": "catalog:",
+    "react": "catalog:react18",
+    "react-dom": "catalog:react18",
+    "tailwindcss": "catalog:",
+    "typescript": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20241011.0",
+    "@types/react": "catalog:react18",
+    "@types/react-dom": "catalog:react18",
+    "@xystack/auth": "workspace:*",
+    "@xystack/eslint-config": "workspace:*",
+    "@xystack/prettier-config": "workspace:*",
+    "@xystack/tailwind-config": "workspace:*",
+    "@xystack/tsconfig": "workspace:*",
+    "wrangler": "catalog:"
+  },
+  "prettier": "@xystack/prettier-config"
+}

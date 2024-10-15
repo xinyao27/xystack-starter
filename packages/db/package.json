@@ -1,0 +1,51 @@
+{
+  "name": "@xystack/db",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./src/index.ts"
+    },
+    "./client": {
+      "types": "./dist/client.d.ts",
+      "default": "./src/client.ts"
+    },
+    "./schema": {
+      "types": "./dist/schema.d.ts",
+      "default": "./src/schema.ts"
+    },
+    "./env": "./get-env.ts"
+  },
+  "scripts": {
+    "build": "tsup src/index.ts --dts --format esm",
+    "clean": "git clean -xdf .cache .turbo dist node_modules",
+    "dev": "tsup src/index.ts --dts --format esm --watch",
+    "format": "prettier --check . --ignore-path ../../.gitignore",
+    "lint": "eslint",
+    "push": "pnpm with-env drizzle-kit push",
+    "studio": "LOCAL_DB_PATH=$(find ../../.wrangler/state/v3/d1/miniflare-D1DatabaseObject -type f -name '*.sqlite' -print -quit) pnpm with-env drizzle-kit studio",
+    "typecheck": "tsc --noEmit --emitDeclarationOnly false",
+    "with-env": "dotenv -e ../../.env --",
+    "cf-typegen": "wrangler types"
+  },
+  "dependencies": {
+    "drizzle-orm": "^0.34.0",
+    "drizzle-zod": "^0.5.1",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@xystack/eslint-config": "workspace:*",
+    "@xystack/prettier-config": "workspace:*",
+    "@xystack/tsconfig": "workspace:*",
+    "better-sqlite3": "^11.3.0",
+    "dotenv-cli": "^7.4.2",
+    "drizzle-kit": "^0.25.0",
+    "eslint": "catalog:",
+    "prettier": "catalog:",
+    "typescript": "catalog:"
+  },
+  "prettier": "@xystack/prettier-config"
+}

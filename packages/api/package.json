@@ -1,0 +1,41 @@
+{
+  "name": "@xystack/api",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsup src/index.ts --dts --format esm",
+    "clean": "git clean -xdf .cache .turbo dist node_modules",
+    "dev": "tsup src/index.ts --dts --format esm --watch",
+    "format": "prettier --check . --ignore-path ../../.gitignore",
+    "lint": "eslint",
+    "typecheck": "tsc --noEmit --emitDeclarationOnly false"
+  },
+  "dependencies": {
+    "@hono/zod-validator": "^0.4.1",
+    "@xystack/auth": "workspace:*",
+    "@xystack/db": "workspace:*",
+    "@xystack/validators": "workspace:*",
+    "arctic": "catalog:",
+    "hono": "catalog:",
+    "lucia": "catalog:",
+    "superjson": "2.2.1",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@xystack/eslint-config": "workspace:*",
+    "@xystack/prettier-config": "workspace:*",
+    "@xystack/tsconfig": "workspace:*",
+    "eslint": "catalog:",
+    "prettier": "catalog:",
+    "typescript": "catalog:"
+  },
+  "prettier": "@xystack/prettier-config"
+}

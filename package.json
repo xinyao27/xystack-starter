@@ -1,0 +1,41 @@
+{
+  "name": "xystack-starter",
+  "private": true,
+  "packageManager": "pnpm@9.12.0",
+  "type": "module",
+  "scripts": {
+    "build": "turbo run build",
+    "clean": "git clean -xdf node_modules",
+    "clean:workspaces": "turbo run clean",
+    "db:push": "turbo -F @xystack/db push",
+    "db:studio": "turbo -F @xystack/db studio",
+    "dev": "turbo watch dev --continue",
+    "dev:web": "turbo watch dev -F web...",
+    "lint": "turbo run lint --continue -- --cache --cache-location .cache/.eslintcache",
+    "lint:fix": "turbo run lint --continue -- --fix --cache --cache-location .cache/.eslintcache",
+    "lint:ws": "pnpm dlx sherif@latest --fix",
+    "postinstall": "pnpm lint:ws",
+    "typecheck": "turbo run typecheck",
+    "ui-add": "turbo run ui-add",
+    "db:generate": "pnpm with-env drizzle-kit generate",
+    "db:migrate:local": "wrangler d1 migrations apply xystack --local",
+    "db:migrate:prod": "wrangler d1 migrations apply xystack --remote",
+    "db:migrate:preview": "wrangler d1 migrations apply --env preview xystack-preview --remote"
+  },
+  "devDependencies": {
+    "@turbo/gen": "^2.1.3",
+    "@xystack/eslint-config": "workspace:*",
+    "@xystack/prettier-config": "workspace:*",
+    "@xystack/style-guide": "^0.2.4",
+    "eslint": "catalog:",
+    "prettier": "catalog:",
+    "tsup": "^8.3.0",
+    "turbo": "^2.1.3",
+    "typescript": "catalog:",
+    "wrangler": "catalog:"
+  },
+  "engines": {
+    "node": ">=20.16.0"
+  },
+  "prettier": "@xystack/style-guide/prettier"
+}
