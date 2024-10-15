@@ -1,9 +1,10 @@
 import { createEnv } from '@t3-oss/env-core'
 import { z } from 'zod'
 import { env as authEnv } from '@xystack/auth/env'
+import { env as dbEnv } from '@xystack/db/env'
 
 export const env = createEnv({
-  extends: [authEnv],
+  extends: [authEnv, dbEnv],
   clientPrefix: 'PUBLIC_',
   shared: {
     NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),

@@ -11,7 +11,7 @@ import type { createDBClient } from '@xystack/db'
 import type { DatabaseUserAttributes } from '@xystack/auth'
 import type { D1Database } from '@cloudflare/workers-types'
 
-export const app = new Hono<Env>()
+export const app = new Hono<Env>().basePath('/api')
 
 app.use('*', prettyJSON())
 app.use('*', requestId())

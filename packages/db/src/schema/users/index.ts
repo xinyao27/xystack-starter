@@ -1,14 +1,14 @@
 import { relations } from 'drizzle-orm'
 import { sqliteTable } from 'drizzle-orm/sqlite-core'
 
-export const users = sqliteTable('user', (t) => ({
+export const users = sqliteTable('users', (t) => ({
   id: t.text('id').primaryKey(),
   githubId: t.integer('github_id').notNull().unique(),
   username: t.text('username').notNull(),
   email: t.text('email'),
 }))
 
-export const sessions = sqliteTable('session', (t) => ({
+export const sessions = sqliteTable('sessions', (t) => ({
   id: t.text('id').primaryKey(),
   userId: t
     .text('user_id')

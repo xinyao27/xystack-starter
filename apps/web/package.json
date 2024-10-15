@@ -26,6 +26,7 @@
     "astro": "^4.16.2",
     "hono": "catalog:",
     "lucia": "catalog:",
+    "lucide-react": "^0.453.0",
     "react": "catalog:react18",
     "react-dom": "catalog:react18",
     "tailwindcss": "catalog:",

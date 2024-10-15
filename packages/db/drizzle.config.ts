@@ -1,24 +1,26 @@
 import { env } from './get-env'
 import type { Config } from 'drizzle-kit'
 
+const baseConfig: Config = {
+  schema: './src/schema/index.ts',
+  out: './migrations',
+  dialect: 'sqlite',
+  casing: 'snake_case',
+}
+
 export default env.LOCAL_DB_PATH
-  ? ({
-      schema: './src/schema/index.ts',
-      dialect: 'sqlite',
+  ? {
+      ...baseConfig,
       dbCredentials: {
         url: env.LOCAL_DB_PATH,
       },
-      casing: 'snake_case',
-    } satisfies Config)
-  : ({
-      schema: './src/schema/index.ts',
-      out: './migrations',
-      dialect: 'sqlite',
+    }
+  : {
+      ...baseConfig,
       driver: 'd1-http',
       dbCredentials: {
         databaseId: env.CLOUDFLARE_DB_ID,
         token: env.CLOUDFLARE_D1_TOKEN,
         accountId: env.CLOUDFLARE_ACCOUNT_ID,
       },
-      casing: 'snake_case',
-    } satisfies Config)
+    }

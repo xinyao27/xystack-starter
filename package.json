@@ -17,10 +17,7 @@
     "postinstall": "pnpm lint:ws",
     "typecheck": "turbo run typecheck",
     "ui-add": "turbo run ui-add",
-    "db:generate": "pnpm with-env drizzle-kit generate",
-    "db:migrate:local": "wrangler d1 migrations apply xystack --local",
-    "db:migrate:prod": "wrangler d1 migrations apply xystack --remote",
-    "db:migrate:preview": "wrangler d1 migrations apply --env preview xystack-preview --remote"
+    "cf:login": "wrangler login"
   },
   "devDependencies": {
     "@turbo/gen": "^2.1.3",
@@ -29,7 +26,6 @@
     "@xystack/style-guide": "^0.2.4",
     "eslint": "catalog:",
     "prettier": "catalog:",
-    "tsup": "^8.3.0",
     "turbo": "^2.1.3",
     "typescript": "catalog:",
     "wrangler": "catalog:"

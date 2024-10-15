@@ -1,7 +1,7 @@
 name = "xystack_web"
 compatibility_date = "2024-10-11"
 compatibility_flags = ["nodejs_compat_v2"]
-assets = { directory = "./apps/web/dist", binding = "ASSETS" }
+# assets = { directory = "./apps/web/dist", binding = "ASSETS" }
 
 [[ d1_databases ]]
 binding = "DB"
@@ -15,6 +15,7 @@ name = "preview"
 binding = "DB"
 database_name = "xystack-preview"
 database_id = "7de1dbbe-ab2a-4744-aab0-cc6db47886b6"
+migrations_dir = "./packages/db/migrations"
 
 # Workers Logs
 # Docs: https://developers.cloudflare.com/workers/observability/logs/workers-logs/

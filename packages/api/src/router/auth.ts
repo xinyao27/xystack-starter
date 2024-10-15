@@ -1,7 +1,7 @@
 // api/auth
 
 import { Hono } from 'hono'
-import { getSignedCookie, setCookie, setSignedCookie } from 'hono/cookie'
+import { getCookie, setCookie } from 'hono/cookie'
 import { OAuth2RequestError, generateState } from 'arctic'
 import { github } from '@xystack/auth'
 import { generateIdFromEntropySize } from 'lucia'
@@ -15,7 +15,7 @@ auth.get('/github', async (c) => {
   const state = generateState()
   const url = await github.createAuthorizationURL(state)
 
-  setSignedCookie(c, 'github_oauth_state', state, env.AUTH_SECRET || '', {
+  setCookie(c, 'oauth_state', state, {
     path: '/',
     secure: env.NODE_ENV === 'production',
     httpOnly: true,
@@ -27,19 +27,18 @@ auth.get('/github', async (c) => {
 })
 
 interface GitHubUser {
-  id: string
+  id: number
   login: string
   email: string
 }
-auth.get('/github/callback', async (c) => {
+auth.get('/callback', async (c) => {
   const db = c.get('db')
   const lucia = c.get('lucia')
   const code = c.req.query('code')
   const state = c.req.query('state')
-  const cookieState = await getSignedCookie(c, 'github_oauth_state')
-
-  if (!code || !state || state !== cookieState.value) {
-    return c.json({ error: 'Invalid state' }, 400)
+  const cookieState = await getCookie(c, 'oauth_state')
+  if (!code || !state || state !== cookieState) {
+    throw new Error('Invalid state')
   }
 
   try {
@@ -52,8 +51,9 @@ auth.get('/github/callback', async (c) => {
     const githubUser: GitHubUser = await githubUserResponse.json()
 
     const existingUser = await db.query.users.findFirst({
-      where: eq(users.githubId, Number(githubUser.id)),
+      where: eq(users.githubId, githubUser.id),
     })
+    console.log('existingUser', existingUser)
 
     if (existingUser) {
       const session = await lucia.createSession(existingUser.id, {})
@@ -63,10 +63,11 @@ auth.get('/github/callback', async (c) => {
     }
 
     const userId = generateIdFromEntropySize(10) // 16 characters long
+    console.log('userId', userId)
 
     await db.insert(users).values({
       id: userId,
-      githubId: Number(githubUser.id),
+      githubId: githubUser.id,
       username: githubUser.login,
       email: githubUser.email,
     })
@@ -75,17 +76,14 @@ auth.get('/github/callback', async (c) => {
     const sessionCookie = lucia.createSessionCookie(session.id)
     setCookie(c, sessionCookie.name, sessionCookie.value, sessionCookie.attributes)
     return c.redirect('/')
-  } catch (error) {
+  } catch (error: any) {
+    console.error(error)
     // the specific error message depends on the provider
     if (error instanceof OAuth2RequestError) {
       // invalid code
-      return new Response(null, {
-        status: 400,
-      })
+      return c.json({ error: error.message }, 400)
     }
-    return new Response(null, {
-      status: 500,
-    })
+    return c.json({ error: error.message || 'Internal server error' }, 500)
   }
 })
 

@@ -5,31 +5,25 @@
   "type": "module",
   "license": "MIT",
   "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "default": "./src/index.ts"
-    },
-    "./client": {
-      "types": "./dist/client.d.ts",
-      "default": "./src/client.ts"
-    },
-    "./schema": {
-      "types": "./dist/schema.d.ts",
-      "default": "./src/schema.ts"
-    },
+    ".": "./src/index.ts",
+    "./client": "./src/client.ts",
+    "./schema": "./src/schema.ts",
     "./env": "./get-env.ts"
   },
   "scripts": {
-    "build": "tsup src/index.ts --dts --format esm",
     "clean": "git clean -xdf .cache .turbo dist node_modules",
-    "dev": "tsup src/index.ts --dts --format esm --watch",
-    "format": "prettier --check . --ignore-path ../../.gitignore",
     "lint": "eslint",
     "push": "pnpm with-env drizzle-kit push",
     "studio": "LOCAL_DB_PATH=$(find ../../.wrangler/state/v3/d1/miniflare-D1DatabaseObject -type f -name '*.sqlite' -print -quit) pnpm with-env drizzle-kit studio",
     "typecheck": "tsc --noEmit --emitDeclarationOnly false",
     "with-env": "dotenv -e ../../.env --",
-    "cf-typegen": "wrangler types"
+    "cf-typegen": "wrangler types",
+    "db:push": "pnpm with-env drizzle-kit push",
+    "db:pull": "pnpm with-env drizzle-kit pull",
+    "db:generate": "pnpm with-env drizzle-kit generate",
+    "db:migrate:local": "wrangler d1 migrations apply xystack --local",
+    "db:migrate:prod": "wrangler d1 migrations apply xystack --remote",
+    "db:migrate:preview": "wrangler d1 migrations apply --env preview xystack-preview --remote"
   },
   "dependencies": {
     "drizzle-orm": "^0.34.0",

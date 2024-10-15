@@ -3,7 +3,7 @@ import { sqliteTable } from 'drizzle-orm/sqlite-core'
 import { createInsertSchema } from 'drizzle-zod'
 import { z } from 'zod'
 
-export const posts = sqliteTable('post', (t) => ({
+export const posts = sqliteTable('posts', (t) => ({
   id: t.integer('id').primaryKey(),
   title: t.text('title', { length: 256 }).notNull(),
   content: t.text('content').notNull(),
