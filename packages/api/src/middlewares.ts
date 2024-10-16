@@ -1,6 +1,7 @@
-import { createDBClient } from '@xystack/db/client'
 import { createMiddleware } from 'hono/factory'
-import { createLucia } from '@xystack/auth'
+import { createDBClient } from '@xystack/db/client'
+import { AuthInstance, createLucia } from '@xystack/auth'
+import { getCookie, setCookie } from 'hono/cookie'
 
 export const db = () =>
   createMiddleware(async (c, next) => {
@@ -14,6 +15,19 @@ export const lucia = () =>
     const db = c.get('db')
     const lucia = createLucia(db)
     c.set('lucia', lucia)
+    await next()
+  })
+
+export const auth = () =>
+  createMiddleware(async (c, next) => {
+    const authInstance = new AuthInstance({
+      db: c.get('db'),
+      cookieHandler: {
+        getCookie: (key) => getCookie(c, key),
+        setCookie: (key, value, attributes) => setCookie(c, key, value, attributes),
+      },
+    })
+    c.set('auth', authInstance)
     await next()
   })
 

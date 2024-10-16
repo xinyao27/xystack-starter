@@ -5,10 +5,9 @@
   "type": "module",
   "license": "MIT",
   "exports": {
-    ".": {
-      "react-server": "./src/index.rsc.ts",
-      "default": "./src/index.ts"
-    },
+    ".": "./src/index.ts",
+    "./react": "./src/react/index.ts",
+    "./astro": "./src/astro/index.ts",
     "./env": "./get-env.ts"
   },
   "scripts": {
@@ -18,10 +17,14 @@
   },
   "dependencies": {
     "@lucia-auth/adapter-drizzle": "^1.1.0",
+    "@nanostores/react": "catalog:",
     "@t3-oss/env-core": "catalog:",
     "@xystack/db": "workspace:*",
     "arctic": "catalog:",
+    "consola": "catalog:",
+    "hono": "catalog:",
     "lucia": "catalog:",
+    "nanostores": "catalog:",
     "react": "catalog:react18",
     "react-dom": "catalog:react18",
     "zod": "catalog:"

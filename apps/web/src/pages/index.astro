@@ -2,8 +2,6 @@
 import Layout from '../layouts/Layout.astro'
 import Card from '../components/Card.astro'
 import Login from '../components/login'
-
-console.log(Astro.locals.runtime.env.DB)
 ---
 
 <script>
@@ -47,7 +45,7 @@ console.log(Astro.locals.runtime.env.DB)
     </svg>
     <h1>Welcome to <span class="text-gradient">Astro</span></h1>
 
-    <Login />
+    <Login client:only />
 
     <ul role="list" class="link-card-grid">
       <Card

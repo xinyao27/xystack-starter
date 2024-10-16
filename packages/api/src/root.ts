@@ -6,10 +6,10 @@ import { prettyJSON } from 'hono/pretty-json'
 import { HTTPException } from 'hono/http-exception'
 import authRouter from './router/auth'
 import postRouter from './router/post'
-import { db, lucia, responseTime } from './middlewares'
+import { auth, db, lucia, responseTime } from './middlewares'
 import type { Lucia } from 'lucia'
 import type { createDBClient } from '@xystack/db'
-import type { DatabaseUserAttributes } from '@xystack/auth'
+import type { AuthInstance, DatabaseUserAttributes } from '@xystack/auth'
 import type { D1Database } from '@cloudflare/workers-types'
 
 export const app = new Hono<Env>()
@@ -22,6 +22,7 @@ export const app = new Hono<Env>()
   .use(responseTime())
   .use(db())
   .use(lucia())
+  .use(auth())
 
   .route('/auth', authRouter)
   .route('/post', postRouter)
@@ -52,5 +53,6 @@ export interface Env {
   Variables: {
     db: ReturnType<typeof createDBClient>
     lucia: Lucia<Record<never, never>, DatabaseUserAttributes>
+    auth: AuthInstance
   }
 }

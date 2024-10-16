@@ -28,5 +28,6 @@
     "pcss",
     "postcss"
   ],
-  "html.format.enable": false
+  "html.format.enable": false,
+  "typescript.tsdk": "node_modules/typescript/lib"
 }

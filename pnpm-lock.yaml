@@ -6,6 +6,9 @@ settings:
 
 catalogs:
   default:
+    '@nanostores/react':
+      specifier: ^0.8.0
+      version: 0.8.0
     '@t3-oss/env-core':
       specifier: ^0.11.1
       version: 0.11.1
@@ -18,6 +21,9 @@ catalogs:
     arctic:
       specifier: ^1.9.2
       version: 1.9.2
+    consola:
+      specifier: ^3.2.3
+      version: 3.2.3
     eslint:
       specifier: ^9.12.0
       version: 9.12.0
@@ -27,6 +33,9 @@ catalogs:
     lucia:
       specifier: ^3.2.1
       version: 3.2.1
+    nanostores:
+      specifier: ^0.11.3
+      version: 0.11.3
     prettier:
       specifier: ^3.3.3
       version: 3.3.3
@@ -230,6 +239,9 @@ importers:
       '@lucia-auth/adapter-drizzle':
         specifier: ^1.1.0
         version: 1.1.0(drizzle-orm@0.34.0(@cloudflare/workers-types@4.20241011.0)(@neondatabase/serverless@0.10.0)(@opentelemetry/api@1.9.0)(@planetscale/database@1.19.0)(@types/pg@8.11.10)(@types/react@18.3.11)(@vercel/postgres@0.10.0(utf-8-validate@6.0.4))(better-sqlite3@11.3.0)(mysql2@3.11.3)(postgres@3.4.4)(react@18.3.1))(lucia@3.2.1)
+      '@nanostores/react':
+        specifier: 'catalog:'
+        version: 0.8.0(nanostores@0.11.3)(react@18.3.1)
       '@t3-oss/env-core':
         specifier: 'catalog:'
         version: 0.11.1(typescript@5.6.2)(zod@3.23.8)
@@ -239,9 +251,18 @@ importers:
       arctic:
         specifier: 'catalog:'
         version: 1.9.2
+      consola:
+        specifier: 'catalog:'
+        version: 3.2.3
+      hono:
+        specifier: 'catalog:'
+        version: 4.6.5
       lucia:
         specifier: 'catalog:'
         version: 3.2.1
+      nanostores:
+        specifier: 'catalog:'
+        version: 0.11.3
       react:
         specifier: catalog:react18
         version: 18.3.1
@@ -1536,6 +1557,13 @@ packages:
     peerDependencies:
       drizzle-orm: '>= 0.29 <1'
       lucia: 3.x
+
+  '@nanostores/react@0.8.0':
+    resolution: {integrity: sha512-MhbVB7NQLboq/Z9fRTDen9zib/YCffe6mn+3Xg5MOYByMX5Xx98SOZjk/Nd3yvOd/g7GjlQqwXj0KF2lPb6CEQ==}
+    engines: {node: ^18.0.0 || >=20.0.0}
+    peerDependencies:
+      nanostores: ^0.9.0 || ^0.10.0 || ^0.11.0
+      react: '>=18.0.0'
 
   '@neondatabase/serverless@0.10.0':
     resolution: {integrity: sha512-+0mjRGJFL2kGyTtWo60PxIcgv0a/X/vCu4DV2iS3tL+Rl/OrFocJoN3aNajugvgBQj624aOK7LowLijoQHWIXg==}
@@ -2864,6 +2892,10 @@ packages:
 
   confbox@0.1.7:
     resolution: {integrity: sha512-uJcB/FKZtBMCJpK8MQji6bJHgu1tixKPxRLeGkNzBoOZzpnZUJm0jm2/sBDWcuBx1dYgxV4JU+g5hmNxCyAmdA==}
+
+  consola@3.2.3:
+    resolution: {integrity: sha512-I5qxpzLv+sJhTVEoLYNcTW+bThDCPsit0vLNKShZx6rLtpilNpmmeTPaeqJb9ZE9dV3DGaeby6Vuhrw38WjeyQ==}
+    engines: {node: ^14.18.0 || >=16.10.0}
 
   constant-case@2.0.0:
     resolution: {integrity: sha512-eS0N9WwmjTqrOmR3o83F5vW8Z+9R1HnVz3xmzT2PMFug9ly+Au/fxRWlEBSb6LcZwspSsEn9Xs1uw9YgzAg1EQ==}
@@ -4479,6 +4511,10 @@ packages:
     resolution: {integrity: sha512-eSRppjcPIatRIMC1U6UngP8XFcz8MQWGQdt1MTBQ7NaAmvXDfvNxbvWV3x2y6CdEUciCSsDHDQZbhYaB8QEo2g==}
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
+
+  nanostores@0.11.3:
+    resolution: {integrity: sha512-TUes3xKIX33re4QzdxwZ6tdbodjmn3tWXCEc1uokiEmo14sI1EaGYNs2k3bU2pyyGNmBqFGAVl6jAGWd06AVIg==}
+    engines: {node: ^18.0.0 || >=20.0.0}
 
   napi-build-utils@1.0.2:
     resolution: {integrity: sha512-ONmRUqK7zj7DWX0D9ADe03wbwOBZxNAfF20PlGfCWQcD3+/MakShIHrMqx9YwPTfxDdF1zLeL+RGZiR9kGMLdg==}
@@ -7012,6 +7048,11 @@ snapshots:
       drizzle-orm: 0.34.0(@cloudflare/workers-types@4.20241011.0)(@neondatabase/serverless@0.10.0)(@opentelemetry/api@1.9.0)(@planetscale/database@1.19.0)(@types/pg@8.11.10)(@types/react@18.3.11)(@vercel/postgres@0.10.0(utf-8-validate@6.0.4))(better-sqlite3@11.3.0)(mysql2@3.11.3)(postgres@3.4.4)(react@18.3.1)
       lucia: 3.2.1
 
+  '@nanostores/react@0.8.0(nanostores@0.11.3)(react@18.3.1)':
+    dependencies:
+      nanostores: 0.11.3
+      react: 18.3.1
+
   '@neondatabase/serverless@0.10.0':
     dependencies:
       '@types/pg': 8.11.6
@@ -8706,6 +8747,8 @@ snapshots:
   concat-map@0.0.1: {}
 
   confbox@0.1.7: {}
+
+  consola@3.2.3: {}
 
   constant-case@2.0.0:
     dependencies:
@@ -10774,6 +10817,8 @@ snapshots:
     optional: true
 
   nanoid@3.3.7: {}
+
+  nanostores@0.11.3: {}
 
   napi-build-utils@1.0.2: {}
 

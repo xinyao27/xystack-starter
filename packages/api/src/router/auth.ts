@@ -1,90 +1,88 @@
 // api/auth
 
 import { Hono } from 'hono'
-import { getCookie, setCookie } from 'hono/cookie'
-import { OAuth2RequestError, generateState } from 'arctic'
-import { github } from '@xystack/auth'
-import { generateIdFromEntropySize } from 'lucia'
-import { eq, users } from '@xystack/db'
-import { env } from '../../get-env'
+import type { OAuthProvider } from '@xystack/auth'
 import type { Env } from '../root'
 
-interface GitHubUser {
-  id: number
-  login: string
-  email: string
-}
-
 const auth = new Hono<Env>()
-  .get('/github', async (c) => {
-    const state = generateState()
-    const url = await github.createAuthorizationURL(state)
+  .get('/session', async (c) => {
+    const authInstance = c.get('auth')
 
-    setCookie(c, 'oauth_state', state, {
-      path: '/',
-      secure: env.NODE_ENV === 'production',
-      httpOnly: true,
-      maxAge: 60 * 10,
-      sameSite: 'lax',
-    })
+    const { data: session, error } = await authInstance.getSession()
+    if (error || !session) {
+      return c.json({ error: error || 'No session' }, 401)
+    }
 
-    return c.redirect(url.toString())
+    return c.json(session)
+  })
+
+  .get('/user', async (c) => {
+    const authInstance = c.get('auth')
+
+    const { data: user, error } = await authInstance.getUser()
+    if (error || !user) {
+      return c.json({ error: error || 'No user' }, 401)
+    }
+
+    return c.json(user)
+  })
+
+  .get('/logout', async (c) => {
+    const authInstance = c.get('auth')
+
+    const { data, error } = await authInstance.signOut()
+    if (error || !data) {
+      return c.json({ error: error || 'Failed to sign out' }, 400)
+    }
+
+    return c.redirect('/')
+  })
+
+  .get('/login/oauth', async (c) => {
+    const authInstance = c.get('auth')
+    const provider = c.req.query('provider') as OAuthProvider | undefined
+    const redirectTo = c.req.query('redirectTo')
+    const scopes = c.req.query('scopes')
+
+    if (!provider) {
+      return c.json({ error: 'Invalid provider' }, 400)
+    }
+
+    const options = { redirectTo, scopes: scopes?.split(',') }
+    const { data, error } = await authInstance.signInWithOAuth({ provider, options })
+    if (error || !data) {
+      return c.json({ error: error || 'Failed to sign in' }, 400)
+    }
+    if (data.url && data.provider === provider) {
+      return c.redirect(data.url.toString(), 302)
+    }
+
+    return c.json({ error: 'Failed to sign in' }, 400)
   })
 
   .get('/callback', async (c) => {
-    const db = c.get('db')
-    const lucia = c.get('lucia')
+    const authInstance = c.get('auth')
     const code = c.req.query('code')
-    const state = c.req.query('state')
-    const cookieState = await getCookie(c, 'oauth_state')
-    if (!code || !state || state !== cookieState) {
-      throw new Error('Invalid state')
+    const providerState = c.req.query('state')
+
+    const [provider] = providerState?.split('$$') ?? []
+    if (!provider) {
+      return c.json({ error: 'Invalid state' }, 400)
     }
 
-    try {
-      const tokens = await github.validateAuthorizationCode(code)
-      const githubUserResponse = await fetch('https://api.github.com/user', {
-        headers: {
-          Authorization: `Bearer ${tokens.accessToken}`,
-        },
-      })
-      const githubUser: GitHubUser = await githubUserResponse.json()
+    const { data, error } = await authInstance.oauthCallback({
+      provider: provider as OAuthProvider,
+      code,
+      state: providerState,
+    })
 
-      const existingUser = await db.query.users.findFirst({
-        where: eq(users.githubId, githubUser.id),
-      })
-      console.log('existingUser', existingUser)
-
-      if (existingUser) {
-        const session = await lucia.createSession(existingUser.id, {})
-        const sessionCookie = lucia.createSessionCookie(session.id)
-        setCookie(c, sessionCookie.name, sessionCookie.value, sessionCookie.attributes)
-        return c.redirect('/')
-      }
-
-      const userId = generateIdFromEntropySize(10) // 16 characters long
-      console.log('userId', userId)
-
-      await db.insert(users).values({
-        id: userId,
-        githubId: githubUser.id,
-        username: githubUser.login,
-        email: githubUser.email,
-      })
-
-      const session = await lucia.createSession(userId, {})
-      const sessionCookie = lucia.createSessionCookie(session.id)
-      setCookie(c, sessionCookie.name, sessionCookie.value, sessionCookie.attributes)
+    if (error || !data) {
+      return c.json({ error: error || 'Failed to callback' }, 400)
+    }
+    if (data.ok) {
       return c.redirect('/')
-    } catch (error: any) {
-      console.error(error)
-      // the specific error message depends on the provider
-      if (error instanceof OAuth2RequestError) {
-        // invalid code
-        return c.json({ error: error.message }, 400)
-      }
-      return c.json({ error: error.message || 'Internal server error' }, 500)
     }
+    return c.json({ error: 'Failed to callback' }, 400)
   })
 
 export default auth
