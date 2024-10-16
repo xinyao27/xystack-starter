@@ -6,9 +6,7 @@
     "dev": "pnpm with-env astro dev",
     "start": "pnpm with-env astro dev",
     "build": "pnpm with-env astro check && astro build",
-    "preview": "pnpm with-env astro build && wrangler dev",
     "astro": "astro",
-    "deploy": "pnpm with-env astro build && wrangler deploy",
     "with-env": "dotenv -e ../../.env --"
   },
   "dependencies": {

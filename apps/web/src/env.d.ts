@@ -1,10 +1,14 @@
 /// <reference path="../.astro/types.d.ts" />
 
-type Runtime = import('@astrojs/cloudflare').Runtime
+interface Env {
+  DB: D1Database
+}
+
+type Runtime = import('@astrojs/cloudflare').Runtime<Env>
 
 declare namespace App {
   interface Locals extends Runtime {
-    user: User | null
-    session: Session | null
+    user: import('lucia').User | null
+    session: import('lucia').Session | null
   }
 }

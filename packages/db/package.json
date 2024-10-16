@@ -11,6 +11,7 @@
     "./env": "./get-env.ts"
   },
   "scripts": {
+    "dev": "pnpm studio",
     "clean": "git clean -xdf .cache .turbo dist node_modules",
     "lint": "eslint",
     "push": "pnpm with-env drizzle-kit push",

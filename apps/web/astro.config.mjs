@@ -10,8 +10,10 @@ export default defineConfig({
   adapter: cloudflare({
     platformProxy: {
       enabled: true,
+      persist: { path: '../../.wrangler/state/v3' },
       configPath: '../../wrangler.toml',
     },
+    imageService: 'passthrough',
   }),
 
   security: {

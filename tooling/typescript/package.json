@@ -4,5 +4,8 @@
   "private": true,
   "files": [
     "*.json"
-  ]
+  ],
+  "dependencies": {
+    "@xystack/style-guide": "catalog:"
+  }
 }

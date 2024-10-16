@@ -2,7 +2,18 @@
 import Layout from '../layouts/Layout.astro'
 import Card from '../components/Card.astro'
 import Login from '../components/login'
+
+console.log(Astro.locals.runtime.env.DB)
 ---
+
+<script>
+  import { client } from '~/lib/client'
+
+  const response = await client.api.post.$get()
+  const json = await response.json()
+
+  console.log(json)
+</script>
 
 <Layout title="Welcome to Astro.">
   <main>

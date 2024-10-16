@@ -3,22 +3,17 @@ compatibility_date = "2024-10-11"
 compatibility_flags = ["nodejs_compat_v2"]
 pages_build_output_dir = "./apps/web/dist"
 
-[[ d1_databases ]]
+[[d1_databases]]
 binding = "DB"
 database_name = "xystack"
 database_id = "47a2e32c-fc99-4c30-b437-d6040e722cd8"
 migrations_dir = "./packages/db/migrations"
+preview_database_id = "DB"
 
 [env.preview]
 name = "preview"
-[[ env.preview.d1_databases ]]
+[[env.preview.d1_databases]]
 binding = "DB"
 database_name = "xystack-preview"
 database_id = "7de1dbbe-ab2a-4744-aab0-cc6db47886b6"
 migrations_dir = "./packages/db/migrations"
-
-# Workers Logs
-# Docs: https://developers.cloudflare.com/workers/observability/logs/workers-logs/
-# Configuration: https://developers.cloudflare.com/workers/observability/logs/workers-logs/#enable-workers-logs
-[observability]
-enabled = true

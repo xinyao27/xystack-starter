@@ -14,6 +14,7 @@
     "prettier": "catalog:"
   },
   "devDependencies": {
+    "@xystack/style-guide": "catalog:",
     "@xystack/tsconfig": "workspace:*",
     "typescript": "catalog:"
   },
