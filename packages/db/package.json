@@ -23,8 +23,7 @@
     "db:pull": "pnpm with-env drizzle-kit pull",
     "db:generate": "pnpm with-env drizzle-kit generate",
     "db:migrate:local": "wrangler d1 migrations apply xystack --local",
-    "db:migrate:prod": "wrangler d1 migrations apply xystack --remote",
-    "db:migrate:preview": "wrangler d1 migrations apply --env preview xystack-preview --remote"
+    "db:migrate:prod": "wrangler d1 migrations apply xystack --remote"
   },
   "dependencies": {
     "drizzle-orm": "^0.34.0",

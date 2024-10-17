@@ -1,10 +1,11 @@
 import { generateState } from 'arctic'
 import { generateIdFromEntropySize } from 'lucia'
-import { eq, users } from '@xystack/db'
+import { and, createIdentitySchema, createUserSchema, eq, identities, users } from '@xystack/db'
 import { env } from '../get-env'
 import { createLucia } from './lucia'
 import { github } from './providers'
 import { OAuthProvider } from './types'
+import type { GitHubUser } from './providers'
 import type {
   OAuthCallbackParams,
   OAuthCallbackReturn,
@@ -193,26 +194,21 @@ export class AuthInstance {
           Authorization: `Bearer ${tokens.accessToken}`,
         },
       })
-      interface GitHubUser {
-        id: number
-        login: string
-        email: string
-      }
       const githubUser: GitHubUser = await githubUserResponse.json()
 
-      const existingUser = await db.query.users.findFirst({
-        where: eq(users.githubId, githubUser.id),
+      const existingIdentity = await db.query.identities.findFirst({
+        where: and(eq(identities.provider, OAuthProvider.GITHUB), eq(identities.userId, githubUser.id.toString())),
       })
 
-      if (existingUser) {
-        const session = await lucia.createSession(existingUser.id, {})
+      if (existingIdentity) {
+        const session = await lucia.createSession(existingIdentity.userId, {})
         const sessionCookie = lucia.createSessionCookie(session.id)
         this.#cookieHandler.setCookie(sessionCookie.name, sessionCookie.value, sessionCookie.attributes)
         return this.#createReturn<OAuthCallbackReturn>(
           {
             provider,
             ok: true,
-            user: existingUser,
+            userId: existingIdentity.userId,
           },
           null,
         )
@@ -220,15 +216,24 @@ export class AuthInstance {
 
       const userId = generateIdFromEntropySize(10) // 16 characters long
 
-      const [newUser] = await db
-        .insert(users)
-        .values({
-          id: userId,
-          githubId: githubUser.id,
-          username: githubUser.login,
-          email: githubUser.email,
-        })
-        .returning()
+      const user = createUserSchema.parse({
+        id: userId,
+        username: githubUser.login,
+        email: githubUser.email,
+        imageUrl: githubUser.avatar_url,
+      })
+      await db.insert(users).values(user)
+
+      const identity = createIdentitySchema.parse({
+        provider: OAuthProvider.GITHUB,
+        identityId: githubUser.id.toString(),
+        userId,
+        email: githubUser.email,
+        username: githubUser.login,
+        imageUrl: githubUser.avatar_url,
+        metadata: githubUser,
+      })
+      await db.insert(identities).values(identity)
 
       const session = await lucia.createSession(userId, {})
       const sessionCookie = lucia.createSessionCookie(session.id)
@@ -238,7 +243,7 @@ export class AuthInstance {
         {
           provider,
           ok: true,
-          user: newUser,
+          userId,
         },
         null,
       )

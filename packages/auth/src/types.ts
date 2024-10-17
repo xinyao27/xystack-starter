@@ -38,5 +38,5 @@ export interface OAuthCallbackParams {
 export interface OAuthCallbackReturn {
   provider: OAuthProvider
   ok: boolean
-  user?: User
+  userId?: string
 }
