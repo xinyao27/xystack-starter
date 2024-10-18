@@ -1,10 +1,10 @@
 import { generateState } from 'arctic'
 import { generateIdFromEntropySize } from 'lucia'
 import { and, createIdentitySchema, createUserSchema, eq, identities, users } from '@xystack/db'
-import { env } from '../get-env'
+import { env } from '../../get-env'
+import { OAuthProvider } from '../types'
 import { createLucia } from './lucia'
 import { github } from './providers'
-import { OAuthProvider } from './types'
 import type { GitHubUser } from './providers'
 import type {
   OAuthCallbackParams,
@@ -13,7 +13,7 @@ import type {
   SignInWithOAuthParams,
   SignInWithOAuthReturn,
   User,
-} from './types'
+} from '../types'
 import type { CookieAttributes, Lucia } from 'lucia'
 import type { createDBClient } from '@xystack/db'
 

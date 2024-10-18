@@ -10,6 +10,6 @@ export const env = createEnv({
     NODE_ENV: z.enum(['development', 'production']).optional(),
   },
   client: {},
-  runtimeEnv: typeof process === 'undefined' ? {} : process.env,
-  skipValidation: typeof process === 'undefined' ? true : process.env.NODE_ENV === 'production'
+  runtimeEnv: typeof process === 'undefined' ? (import.meta as any).env : process.env,
+  skipValidation: typeof process === 'undefined' ? (import.meta as any).env.PROD : process.env.NODE_ENV === 'production'
 })

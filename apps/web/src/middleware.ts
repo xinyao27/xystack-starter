@@ -1,3 +1,3 @@
-import { authMiddleware } from '@xystack/auth/astro'
+import { authMiddleware } from '@xystack/auth/astro/middleware'
 
 export const onRequest = authMiddleware()

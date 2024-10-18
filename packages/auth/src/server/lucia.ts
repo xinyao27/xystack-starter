@@ -1,5 +1,5 @@
 import { Lucia } from 'lucia'
-import { env } from '../get-env'
+import { env } from '../../get-env'
 import { createAdapter } from './adapter'
 import type { createDBClient } from '@xystack/db/client'
 

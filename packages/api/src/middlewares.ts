@@ -1,6 +1,6 @@
 import { createMiddleware } from 'hono/factory'
 import { createDBClient } from '@xystack/db/client'
-import { AuthInstance, createLucia } from '@xystack/auth'
+import { AuthInstance, createLucia } from '@xystack/auth/server'
 import { getCookie, setCookie } from 'hono/cookie'
 
 export const db = () =>

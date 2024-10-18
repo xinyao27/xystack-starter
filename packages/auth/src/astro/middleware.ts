@@ -1,6 +1,6 @@
 import { verifyRequestOrigin } from 'lucia'
 import { createDBClient } from '@xystack/db'
-import { AuthInstance } from '../instance'
+import { AuthInstance } from '../server/instance'
 import type { D1Database } from '@cloudflare/workers-types'
 import type { MiddlewareHandler } from 'astro'
 
