@@ -1,7 +1,7 @@
 import { createEnv } from '@t3-oss/env-core'
-import { z } from 'zod'
 import { env as authEnv } from '@xystack/auth/env'
 import { env as dbEnv } from '@xystack/db/env'
+import { z } from 'zod'
 
 export const env = createEnv({
   extends: [authEnv, dbEnv],
@@ -21,6 +21,9 @@ export const env = createEnv({
   client: {
     // PUBLIC_CLIENTVAR: z.string(),
   },
-  runtimeEnv: import.meta.env,
+  runtimeEnvStrict: {
+    ...process.env,
+    ...(import.meta as any).env,
+  },
   skipValidation: import.meta.env.PROD
 })

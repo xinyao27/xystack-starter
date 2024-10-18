@@ -3,6 +3,9 @@ import cloudflare from '@astrojs/cloudflare'
 import react from '@astrojs/react'
 import tailwind from '@astrojs/tailwind'
 
+// Validate the environment variables
+await import('./src/get-env')
+
 // https://astro.build/config
 export default defineConfig({
   output: 'server',

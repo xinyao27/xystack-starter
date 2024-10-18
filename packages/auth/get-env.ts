@@ -7,9 +7,12 @@ export const env = createEnv({
     GITHUB_CLIENT_ID: z.string().min(1),
     GITHUB_CLIENT_SECRET: z.string().min(1),
     AUTH_SECRET: process.env.NODE_ENV === 'production' ? z.string().min(1) : z.string().min(1).optional(),
-    NODE_ENV: z.enum(['development', 'production']).optional(),
+    NODE_ENV: z.enum(['development', 'production']).optional().default('development'),
   },
   client: {},
-  runtimeEnv: typeof process === 'undefined' ? (import.meta as any).env : process.env,
+  runtimeEnvStrict: {
+    ...process.env,
+    ...(import.meta as any).env,
+  },
   skipValidation: typeof process === 'undefined' ? (import.meta as any).env.PROD : process.env.NODE_ENV === 'production'
 })
