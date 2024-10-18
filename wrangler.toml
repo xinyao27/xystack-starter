@@ -9,8 +9,3 @@ database_name = "xystack"
 database_id = "47a2e32c-fc99-4c30-b437-d6040e722cd8"
 migrations_dir = "./packages/db/migrations"
 preview_database_id = "DB"
-
-[vars]
-GITHUB_CLIENT_ID = ""
-GITHUB_CLIENT_SECRET = ""
-AUTH_SECRET = ""
