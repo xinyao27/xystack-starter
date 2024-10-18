@@ -24,4 +24,10 @@ export default defineConfig({
   },
 
   integrations: [react(), tailwind()],
+
+  vite: {
+    define: {
+      'process.env': process.env,
+    },
+  },
 })
