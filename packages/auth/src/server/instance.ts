@@ -144,6 +144,8 @@ export class AuthInstance {
 
       let url: URL | null = null
       if (provider === OAuthProvider.GITHUB) {
+        // eslint-disable-next-line no-restricted-properties, no-console
+        console.log('Creating GitHub OAuth URL', { env: env.GITHUB_CLIENT_ID, process: process.env.GITHUB_CLIENT_ID })
         url = await github.createAuthorizationURL(state, {
           scopes: options.scopes,
         })
