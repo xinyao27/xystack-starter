@@ -21,6 +21,6 @@ export const env = createEnv({
   client: {
     // PUBLIC_CLIENTVAR: z.string(),
   },
-  runtimeEnv: process.env,
-  skipValidation: process.env.NODE_ENV === 'production'
+  runtimeEnv: import.meta.env,
+  skipValidation: import.meta.env.PROD
 })
