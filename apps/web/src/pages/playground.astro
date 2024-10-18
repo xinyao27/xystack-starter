@@ -1,0 +1,14 @@
+---
+import Layout from '~/layouts/Layout.astro'
+import { Separator } from '@xystack/ui/separator'
+import { Title } from '~/features/playground/title'
+import { Main } from '~/features/playground/main'
+---
+
+<Layout title="Playground">
+  <div class="hidden h-full flex-col md:flex">
+    <Title client:visible />
+    <Separator />
+    <Main client:only />
+  </div>
+</Layout>

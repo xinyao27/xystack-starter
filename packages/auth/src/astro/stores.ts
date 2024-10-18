@@ -11,7 +11,8 @@ export const $userStore = computed($authStore, (auth) => auth?.user)
 onMount($authStore, () => {
   task(async () => {
     consola.info('AuthProvider Load')
-    const client = hc<AppType>(window.location.href)
+    const baseUrl = typeof window === 'undefined' ? 'http://localhost:4321' : window.location.origin
+    const client = hc<AppType>(baseUrl)
 
     const sessionRes = await client.api.auth.session.$get()
     if (sessionRes.ok) {

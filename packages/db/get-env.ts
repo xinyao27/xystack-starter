@@ -10,5 +10,5 @@ export const env = createEnv({
     NODE_ENV: z.enum(['development', 'production']).optional(),
   },
   runtimeEnv: process.env,
-  skipValidation: process.env.NODE_ENV === 'production'
+  skipValidation: process.env.NODE_ENV === 'production',
 })

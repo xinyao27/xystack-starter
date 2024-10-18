@@ -8,7 +8,7 @@ type Runtime = import('@astrojs/cloudflare').Runtime<Env>
 
 declare namespace App {
   interface Locals extends Runtime {
-    user: import('lucia').User | null
-    session: import('lucia').Session | null
+    user: import('@xystack/auth').User | null
+    session: import('@xystack/auth').Session | null
   }
 }

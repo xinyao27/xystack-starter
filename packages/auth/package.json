@@ -12,7 +12,7 @@
   },
   "scripts": {
     "clean": "git clean -xdf .cache .turbo dist node_modules",
-    "lint": "eslint",
+    "lint": "eslint --fix",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

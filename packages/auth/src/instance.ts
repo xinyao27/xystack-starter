@@ -86,12 +86,12 @@ export class AuthInstance {
         throw new Error('No session ID')
       }
 
-      const { session, user } = await lucia.validateSession(sessionId)
+      const { session, user: luciaUser } = await lucia.validateSession(sessionId)
       if (!session) {
         throw new Error('No session')
       }
-      if (!user) {
-        throw new Error('No user')
+      if (!luciaUser) {
+        throw new Error('No user in session')
       }
       if (session && session.fresh) {
         const sessionCookie = lucia.createSessionCookie(session.id)
@@ -101,6 +101,14 @@ export class AuthInstance {
         const sessionCookie = lucia.createBlankSessionCookie()
         this.#cookieHandler.setCookie(sessionCookie.name, sessionCookie.value, sessionCookie.attributes)
       }
+
+      const user = await this.#db.query.users.findFirst({
+        where: eq(users.id, luciaUser.id),
+      })
+      if (!user) {
+        throw new Error('No user in database')
+      }
+
       return this.#createReturn<User>(user, null)
     } catch (error) {
       return this.#createReturn<User>(null, error as Error)

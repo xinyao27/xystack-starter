@@ -45,6 +45,8 @@ export const users = sqliteTable('users', (t) => ({
   updatedAt: t.text('updated_at').$onUpdateFn(() => sql`(current_timestamp)`),
 }))
 
+export type User = typeof users.$inferSelect
+
 export const usersRelations = relations(users, ({ many }) => ({
   identities: many(identities),
 }))
@@ -71,6 +73,8 @@ export const sessions = sqliteTable('sessions', (t) => ({
     .references(() => users.id, { onDelete: 'cascade' }),
   expiresAt: t.integer('expires_at').notNull(),
 }))
+
+export type Session = typeof sessions.$inferSelect
 
 export const sessionRelations = relations(sessions, ({ one }) => ({
   user: one(users, { fields: [sessions.userId], references: [users.id] }),
@@ -135,6 +139,8 @@ export const identities = sqliteTable('identities', (t) => ({
    */
   updatedAt: t.text('updated_at').$onUpdateFn(() => sql`(current_timestamp)`),
 }))
+
+export type Identity = typeof identities.$inferSelect
 
 export const identitiesRelations = relations(identities, ({ one }) => ({
   user: one(users, { fields: [identities.userId], references: [users.id] }),

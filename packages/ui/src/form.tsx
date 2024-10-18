@@ -1,28 +1,12 @@
 'use client'
 
 import * as React from 'react'
-import { zodResolver } from '@hookform/resolvers/zod'
 import { Slot } from '@radix-ui/react-slot'
-import { cn } from '@xystack/ui'
-import { Controller, FormProvider, useForm as __useForm, useFormContext } from 'react-hook-form'
-
+import { Controller, FormProvider, useFormContext } from 'react-hook-form'
 import { Label } from './label'
-import type { ZodType, ZodTypeDef } from 'zod'
-import type { ControllerProps, FieldPath, FieldValues, UseFormProps } from 'react-hook-form'
+import { cn } from '.'
+import type { ControllerProps, FieldPath, FieldValues } from 'react-hook-form'
 import type * as LabelPrimitive from '@radix-ui/react-label'
-
-const useForm = <TOut extends FieldValues, TDef extends ZodTypeDef, TIn extends FieldValues>(
-  props: Omit<UseFormProps<TIn>, 'resolver'> & {
-    schema: ZodType<TOut, TDef, TIn>
-  },
-) => {
-  const form = __useForm<TIn, unknown, TOut>({
-    ...props,
-    resolver: zodResolver(props.schema, undefined),
-  })
-
-  return form
-}
 
 const Form = FormProvider
 
@@ -33,7 +17,8 @@ interface FormFieldContextValue<
   name: TName
 }
 
-const FormFieldContext = React.createContext<FormFieldContextValue | null>(null)
+const FormFieldContext = React.createContext<FormFieldContextValue>({} as FormFieldContextValue)
+const FormItemContext = React.createContext<FormItemContextValue>({} as FormItemContextValue)
 
 const FormField = <
   TFieldValues extends FieldValues = FieldValues,
@@ -48,16 +33,16 @@ const FormField = <
   )
 }
 
-const FormItemContext = React.createContext<FormItemContextValue>({} as FormItemContextValue)
 const useFormField = () => {
   const fieldContext = React.useContext(FormFieldContext)
   const itemContext = React.useContext(FormItemContext)
   const { getFieldState, formState } = useFormContext()
 
+  const fieldState = getFieldState(fieldContext.name, formState)
+
   if (!fieldContext) {
     throw new Error('useFormField should be used within <FormField>')
   }
-  const fieldState = getFieldState(fieldContext.name, formState)
 
   const { id } = itemContext
 
@@ -129,7 +114,7 @@ FormDescription.displayName = 'FormDescription'
 const FormMessage = React.forwardRef<HTMLParagraphElement, React.HTMLAttributes<HTMLParagraphElement>>(
   ({ className, children, ...props }, ref) => {
     const { error, formMessageId } = useFormField()
-    const body = error ? String(error.message) : children
+    const body = error ? String(error?.message) : children
 
     if (!body) {
       return null
@@ -149,6 +134,4 @@ const FormMessage = React.forwardRef<HTMLParagraphElement, React.HTMLAttributes<
 )
 FormMessage.displayName = 'FormMessage'
 
-export { useForm, useFormField, Form, FormItem, FormLabel, FormControl, FormDescription, FormMessage, FormField }
-
-export { useFieldArray } from 'react-hook-form'
+export { useFormField, Form, FormItem, FormLabel, FormControl, FormDescription, FormMessage, FormField }

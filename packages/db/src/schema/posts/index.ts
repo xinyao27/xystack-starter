@@ -14,6 +14,8 @@ export const posts = sqliteTable('posts', (t) => ({
   updatedAt: t.text('updated_at').$onUpdateFn(() => sql`(current_timestamp)`),
 }))
 
+export type Post = typeof posts.$inferSelect
+
 export const createPostSchema = createInsertSchema(posts, {
   title: z.string().max(256),
   content: z.string().max(256),

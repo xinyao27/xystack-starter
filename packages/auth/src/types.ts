@@ -1,4 +1,5 @@
 import type { Session as LuciaSession, User as LuciaUser } from 'lucia'
+import type { User as DbUser } from '@xystack/db'
 
 export interface Auth {
   sessionId?: string
@@ -9,7 +10,7 @@ export interface Auth {
 
 export interface Session extends LuciaSession {}
 
-export interface User extends LuciaUser {}
+export interface User extends LuciaUser, DbUser {}
 
 export enum OAuthProvider {
   GITHUB = 'github',
