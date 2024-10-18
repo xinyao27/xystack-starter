@@ -9,9 +9,6 @@ export const env = createEnv({
     CLOUDFLARE_ACCOUNT_ID: z.string().min(1),
     NODE_ENV: z.enum(['development', 'production']).optional().default('development'),
   },
-  runtimeEnvStrict: {
-    ...process.env,
-    ...(import.meta as any).env,
-  },
+  runtimeEnv: process.env,
   skipValidation: process.env.NODE_ENV === 'production',
 })
