@@ -1,85 +1,131 @@
 // api/auth
 
 import { Hono } from 'hono'
-import type { OAuthProvider } from '@xystack/auth'
+import { zValidator } from '@hono/zod-validator'
+import { z } from 'zod'
+import { OAuthProvider } from '@xystack/auth'
 import type { Env } from '../root'
 
 const auth = new Hono<Env>()
   .get('/session', async (c) => {
     const authInstance = c.get('auth')
 
-    const { data: session, error } = await authInstance.getSession()
-    if (error || !session) {
-      return c.json({ error: error || 'No session' }, 401)
+    const res = await authInstance.getSession()
+    if (res.error || !res.data) {
+      return c.json({ error: res.error || 'No session' }, 401)
     }
 
-    return c.json(session)
+    return c.json(res)
   })
 
   .get('/user', async (c) => {
     const authInstance = c.get('auth')
 
-    const { data: user, error } = await authInstance.getUser()
-    if (error || !user) {
-      return c.json({ error: error || 'No user' }, 401)
+    const res = await authInstance.getUser()
+    if (res.error || !res.data) {
+      return c.json({ error: res.error || 'No user' }, 401)
     }
 
-    return c.json(user)
+    return c.json(res)
   })
 
   .get('/logout', async (c) => {
     const authInstance = c.get('auth')
 
-    const { data, error } = await authInstance.signOut()
-    if (error || !data) {
-      return c.json({ error: error || 'Failed to sign out' }, 400)
+    const res = await authInstance.signOut()
+    if (res.error || !res.data) {
+      return c.json({ error: res.error || 'Failed to sign out' }, 400)
     }
 
-    return c.redirect('/')
+    return c.redirect('/login')
   })
 
-  .get('/login/oauth', async (c) => {
+  .get('/login/otp', zValidator('query', z.object({ email: z.string().email() })), async (c) => {
     const authInstance = c.get('auth')
-    const provider = c.req.query('provider') as OAuthProvider | undefined
-    const redirectTo = c.req.query('redirectTo')
-    const scopes = c.req.query('scopes')
+    const { email } = c.req.valid('query')
 
-    if (!provider) {
-      return c.json({ error: 'Invalid provider' }, 400)
+    const res = await authInstance.signInWithOtp({ email })
+    if (res.error || !res.data) {
+      return c.json({ error: res.error || 'Failed to sign in' }, 400)
     }
 
-    const options = { redirectTo, scopes: scopes?.split(',') }
-    const { data, error } = await authInstance.signInWithOAuth({ provider, options })
-    if (error || !data) {
-      return c.json({ error: error || 'Failed to sign in' }, 400)
-    }
-    if (data.url && data.provider === provider) {
-      return c.redirect(data.url.toString(), 302)
-    }
-
-    return c.json({ error: 'Failed to sign in' }, 400)
+    return c.json(res)
   })
 
-  .get('/callback', async (c) => {
+  .post(
+    '/login/otp/verify',
+    zValidator('json', z.object({ email: z.string().email(), otpCode: z.string() })),
+    async (c) => {
+      const authInstance = c.get('auth')
+      const { email, otpCode } = c.req.valid('json')
+
+      const res = await authInstance.verifyOtp({ email, otpCode })
+      if (res.error || !res.data) {
+        return c.json({ error: res.error || 'Failed to verify OTP' }, 400)
+      }
+
+      return c.json(res)
+    },
+  )
+
+  .get('/login/otp/resend', zValidator('query', z.object({ email: z.string().email() })), async (c) => {
     const authInstance = c.get('auth')
-    const code = c.req.query('code')
-    const providerState = c.req.query('state')
+    const { email } = c.req.valid('query')
+
+    const res = await authInstance.resendOtp({ email })
+    if (res.error || !res.data) {
+      return c.json({ error: res.error || 'Failed to resend OTP' }, 400)
+    }
+
+    return c.json(res)
+  })
+
+  .get(
+    '/login/oauth',
+    zValidator(
+      'query',
+      z.object({
+        provider: z.nativeEnum(OAuthProvider),
+        redirectTo: z.string().url().optional(),
+        scopes: z.string().optional(),
+      }),
+    ),
+    async (c) => {
+      const authInstance = c.get('auth')
+      const { provider, redirectTo, scopes } = c.req.valid('query')
+
+      const options = { redirectTo, scopes: scopes?.split(',') }
+      const res = await authInstance.signInWithOAuth({ provider, options })
+      if (res.error || !res.data) {
+        return c.json({ error: res.error || 'Failed to sign in' }, 400)
+      }
+      if (res.data.url && res.data.provider === provider) {
+        return c.redirect(res.data.url.toString(), 302)
+      }
+
+      return c.json({ error: 'Failed to sign in' }, 400)
+    },
+  )
+
+  .get('/callback', zValidator('query', z.object({ code: z.string(), state: z.string() })), async (c) => {
+    const authInstance = c.get('auth')
+    const { code, state: providerState } = c.req.valid('query')
 
     const [provider] = providerState?.split('$$') ?? []
     if (!provider) {
       return c.json({ error: 'Invalid state' }, 400)
     }
 
-    const { data, error } = await authInstance.oauthCallback({
+    const res = await authInstance.oauthCallback({
       provider: provider as OAuthProvider,
       code,
       state: providerState,
     })
 
-    if (error || !data) {
-      return c.json({ error: error || 'Failed to callback' }, 400)
+    if (res.error || !res.data) {
+      return c.json({ error: res.error || 'Failed to callback' }, 400)
     }
-    if (data.ok) {
+    if (res.data.ok) {
       return c.redirect('/')
     }
     return c.json({ error: 'Failed to callback' }, 400)

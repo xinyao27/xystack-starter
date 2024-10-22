@@ -7,7 +7,6 @@
   "exports": {
     ".": "./src/index.ts",
     "./server": "./src/server/index.ts",
-    "./react": "./src/react/index.ts",
     "./astro": "./src/astro/index.ts",
     "./astro/middleware": "./src/astro/middleware.ts",
     "./env": "./get-env.ts"
@@ -22,8 +21,10 @@
     "@nanostores/react": "catalog:",
     "@t3-oss/env-core": "catalog:",
     "@xystack/db": "workspace:*",
+    "@xystack/email": "workspace:*",
     "arctic": "catalog:",
     "consola": "catalog:",
+    "date-fns": "catalog:",
     "hono": "catalog:",
     "lucia": "catalog:",
     "nanostores": "catalog:",

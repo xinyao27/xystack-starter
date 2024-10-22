@@ -1,7 +1,23 @@
-import { useStore } from '@nanostores/react'
-import { $authStore } from '../stores'
-import { createUseUser } from '../../react'
-import type { UseUserReturn } from '../../react'
+import { useAuth } from './use-auth'
+import type { AuthContextValue } from '../context'
+import type { User } from '../../types'
+
+export type UseUserReturn =
+  | { isLoaded: false; isSignedIn: undefined; user: undefined }
+  | { isLoaded: true; isSignedIn: false; user: null }
+  | { isLoaded: true; isSignedIn: true; user: User }
+
+export function createUseUser(auth: AuthContextValue): UseUserReturn {
+  if (!auth) {
+    return { isLoaded: false, isSignedIn: undefined, user: undefined }
+  }
+
+  if (!auth.user) {
+    return { isLoaded: true, isSignedIn: false, user: null }
+  }
+
+  return { isLoaded: true, isSignedIn: true, user: auth.user! }
+}
 
 /**
  * Returns the current auth state and if a user is signed in, the user object.
@@ -24,7 +40,7 @@ import type { UseUserReturn } from '../../react'
  * }
  */
 export function useUser(): UseUserReturn {
-  const auth = useStore($authStore)
+  const auth = useAuth()
 
   return createUseUser(auth)
 }

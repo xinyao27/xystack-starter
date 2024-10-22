@@ -12,13 +12,13 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from '@xystack/ui/dropdown-menu'
-import type { User } from '@xystack/auth'
+import type { User as UserType } from '@xystack/auth'
 
 interface UserProps {
-  userAstro?: User | null
+  userAstro?: UserType | null
 }
 
-function UserComponent({ userAstro }: UserProps) {
+export function User({ userAstro }: UserProps) {
   const { isLoaded, isSignedIn, user } = useUser()
 
   if (!isLoaded) {
@@ -72,10 +72,8 @@ function UserComponent({ userAstro }: UserProps) {
   }
 
   return (
-    <a className={cn(buttonVariants({ variant: 'outline', size: 'sm' }))} href="/api/auth/login/oauth?provider=github">
+    <a className={cn(buttonVariants({ variant: 'outline', size: 'sm' }))} href="/login">
       Sign in
     </a>
   )
 }
-
-export default UserComponent

@@ -23,7 +23,7 @@ import {
 } from '@xystack/ui/dropdown-menu'
 import { Label } from '@xystack/ui/label'
 import { Switch } from '@xystack/ui/switch'
-import { toast } from '@xystack/ui/use-toast'
+import { toast } from '@xystack/ui/sonner'
 
 export function PresetActions() {
   const [open, setIsOpen] = React.useState(false)
@@ -89,9 +89,7 @@ export function PresetActions() {
               variant="destructive"
               onClick={() => {
                 setShowDeleteDialog(false)
-                toast({
-                  description: 'This preset has been deleted.',
-                })
+                toast('This preset has been deleted.')
               }}
             >
               Delete

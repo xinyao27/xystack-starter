@@ -16,6 +16,35 @@ export enum OAuthProvider {
   GITHUB = 'github',
 }
 
+export interface SignInWithOtpParams {
+  email: string
+  options?: {
+    redirectTo?: string
+  }
+}
+
+export interface SignInWithOtpReturn {
+  email: string
+}
+
+export interface VerifyOtpParams {
+  email: string
+  otpCode: string
+}
+
+export interface VerifyOtpReturn {
+  user: User
+  session: Session
+}
+
+export interface ResendOtpParams {
+  email: string
+}
+
+export interface ResendOtpReturn {
+  email: string
+}
+
 export interface SignInWithOAuthParams {
   provider: OAuthProvider
   options: {

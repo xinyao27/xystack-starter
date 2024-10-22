@@ -33,7 +33,12 @@ CREATE TABLE `users` (
 	`email` text,
 	`username` text NOT NULL,
 	`image_url` text,
+	`otp_code` text,
+	`otp_expires_at` text,
 	`last_sign_in_at` text DEFAULT (current_timestamp) NOT NULL,
 	`created_at` text DEFAULT (current_timestamp) NOT NULL,
 	`updated_at` text
 );
+--> statement-breakpoint
+CREATE UNIQUE INDEX `users_email_unique` ON `users` (`email`);--> statement-breakpoint
+CREATE UNIQUE INDEX `emailUniqueIndex` ON `users` (lower("email"));

@@ -1,18 +1,29 @@
+import crypto from 'node:crypto'
 import { generateState } from 'arctic'
 import { generateIdFromEntropySize } from 'lucia'
 import { and, createIdentitySchema, createUserSchema, eq, identities, users } from '@xystack/db'
+import { send } from '@xystack/email'
+import { addMinutes, formatISO9075, isAfter } from 'date-fns'
+import consola from 'consola'
 import { env } from '../../get-env'
 import { OAuthProvider } from '../types'
 import { createLucia } from './lucia'
 import { github } from './providers'
+import type { Return } from '../../../api/src/root'
 import type { GitHubUser } from './providers'
 import type {
   OAuthCallbackParams,
   OAuthCallbackReturn,
+  ResendOtpParams,
+  ResendOtpReturn,
   Session,
   SignInWithOAuthParams,
   SignInWithOAuthReturn,
+  SignInWithOtpParams,
+  SignInWithOtpReturn,
   User,
+  VerifyOtpParams,
+  VerifyOtpReturn,
 } from '../types'
 import type { CookieAttributes, Lucia } from 'lucia'
 import type { createDBClient } from '@xystack/db'
@@ -25,11 +36,6 @@ export interface CookieHandler {
 interface Options {
   db: ReturnType<typeof createDBClient>
   cookieHandler: CookieHandler
-}
-
-interface Return<T> {
-  data: T | null
-  error: string | null
 }
 
 export class AuthInstance {
@@ -135,6 +141,103 @@ export class AuthInstance {
     }
   }
 
+  #createOtpAndSendEmail = async (email: string, user: User) => {
+    // Generate a 6-digit OTP
+    const otp = crypto.randomInt(100000, 999999).toString()
+
+    const text = `Please enter the following code to sign in: ${otp}`
+    // Send OTP via email
+    const { data, error } = await send.emails.send({
+      from: 'hi@brainstorm.cool',
+      to: email,
+      subject: 'Sign in to XYStack',
+      text,
+    })
+    if (error || !data) {
+      throw new Error(error?.message)
+    }
+
+    if (data.id) {
+      consola.success('success send email: ', data.id)
+      // Store OTP in database with expiration time
+      const expiresAt = addMinutes(new Date(), 10) // 10 minutes from now
+      await this.#db
+        .update(users)
+        .set({
+          otpCode: otp,
+          otpExpiresAt: formatISO9075(expiresAt),
+        })
+        .where(eq(users.id, user.id))
+    }
+  }
+
+  public signInWithOtp = async ({ email }: SignInWithOtpParams): Promise<Return<SignInWithOtpReturn>> => {
+    try {
+      const user = await this.#db.query.users.findFirst({
+        where: eq(users.email, email),
+      })
+      if (!user) {
+        throw new Error('No user, please sign up first.')
+      }
+
+      if (!user.otpExpiresAt || isAfter(new Date(), user.otpExpiresAt)) {
+        await this.#createOtpAndSendEmail(email, user)
+      }
+
+      return this.#createReturn<SignInWithOtpReturn>({ email }, null)
+    } catch (error) {
+      return this.#createReturn<SignInWithOtpReturn>(null, error as Error)
+    }
+  }
+
+  public verifyOtp = async ({ email, otpCode }: VerifyOtpParams): Promise<Return<VerifyOtpReturn>> => {
+    try {
+      const user = await this.#db.query.users.findFirst({
+        where: eq(users.email, email),
+      })
+      if (!user || !user.otpCode || !user.otpExpiresAt) {
+        throw new Error('Invalid OTP or user not found')
+      }
+
+      if (isAfter(Date.now(), user.otpExpiresAt)) {
+        throw new Error('OTP has expired')
+      }
+
+      if (user.otpCode !== otpCode) {
+        throw new Error('Invalid OTP')
+      }
+
+      // Clear OTP after successful verification
+      await this.#db.update(users).set({ otpCode: null, otpExpiresAt: null }).where(eq(users.id, user.id))
+
+      // Create a new session
+      const session = await this.lucia.createSession(user.id, {})
+      const sessionCookie = this.lucia.createSessionCookie(session.id)
+      this.#cookieHandler.setCookie(sessionCookie.name, sessionCookie.value, sessionCookie.attributes)
+
+      return this.#createReturn<VerifyOtpReturn>({ user, session }, null)
+    } catch (error) {
+      return this.#createReturn<VerifyOtpReturn>(null, error as Error)
+    }
+  }
+
+  public resendOtp = async ({ email }: ResendOtpParams): Promise<Return<ResendOtpReturn>> => {
+    try {
+      const user = await this.#db.query.users.findFirst({
+        where: eq(users.email, email),
+      })
+      if (!user) {
+        throw new Error('No user, please sign up first.')
+      }
+
+      await this.#createOtpAndSendEmail(email, user)
+
+      return this.#createReturn<ResendOtpReturn>({ email }, null)
+    } catch (error) {
+      return this.#createReturn<ResendOtpReturn>(null, error as Error)
+    }
+  }
+
   public signInWithOAuth = async ({
     provider,
     options,
@@ -205,7 +308,7 @@ export class AuthInstance {
       const githubUser: GitHubUser = await githubUserResponse.json()
 
       const existingIdentity = await db.query.identities.findFirst({
-        where: and(eq(identities.provider, OAuthProvider.GITHUB), eq(identities.userId, githubUser.id.toString())),
+        where: and(eq(identities.provider, OAuthProvider.GITHUB), eq(identities.identityId, githubUser.id.toString())),
       })
 
       if (existingIdentity) {

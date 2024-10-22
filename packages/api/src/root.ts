@@ -9,7 +9,7 @@ import postRouter from './router/post'
 import { auth, db, lucia, responseTime } from './middlewares'
 import type { Lucia } from 'lucia'
 import type { createDBClient } from '@xystack/db'
-import type { AuthInstance, DatabaseUserAttributes } from '@xystack/auth'
+import type { AuthInstance, DatabaseUserAttributes } from '@xystack/auth/server'
 import type { D1Database } from '@cloudflare/workers-types'
 
 export const app = new Hono<Env>()
@@ -55,4 +55,9 @@ export interface Env {
     lucia: Lucia<Record<never, never>, DatabaseUserAttributes>
     auth: AuthInstance
   }
+}
+
+export interface Return<T> {
+  data: T | null
+  error: string | null
 }

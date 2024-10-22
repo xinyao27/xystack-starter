@@ -1,28 +1,21 @@
 {
-  "name": "@xystack/api",
+  "name": "@xystack/email",
   "version": "0.1.0",
   "private": true,
   "type": "module",
   "license": "MIT",
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./src/index.ts",
+    "./env": "./get-env.ts"
   },
   "scripts": {
     "clean": "git clean -xdf .cache .turbo dist node_modules",
     "lint": "eslint --fix",
-    "typecheck": "tsc --noEmit --emitDeclarationOnly false"
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@hono/zod-validator": "^0.4.1",
-    "@xystack/auth": "workspace:*",
-    "@xystack/db": "workspace:*",
-    "@xystack/email": "workspace:*",
-    "@xystack/validators": "workspace:*",
-    "arctic": "catalog:",
-    "hono": "catalog:",
-    "lucia": "catalog:",
-    "superjson": "2.2.1",
-    "zod": "catalog:"
+    "@t3-oss/env-core": "catalog:",
+    "resend": "catalog:"
   },
   "devDependencies": {
     "@xystack/eslint-config": "workspace:*",

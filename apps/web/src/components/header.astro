@@ -1,6 +1,6 @@
 ---
 // import { Logo } from '~/components/logo'
-import User from '~/components/user'
+import { User } from '~/components/user'
 
 const pages = [
   {
@@ -31,7 +31,7 @@ const user = Astro.locals.user
     </ul>
 
     <div class="flex items-center space-x-2">
-      <User userAstro={user} client:only />
+      <User userAstro={user} client:only="react" />
     </div>
   </nav>
 </header>

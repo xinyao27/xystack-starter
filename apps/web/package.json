@@ -14,6 +14,7 @@
     "@astrojs/cloudflare": "^11.1.0",
     "@astrojs/react": "^3.6.2",
     "@astrojs/tailwind": "^5.1.2",
+    "@hookform/resolvers": "^3.9.0",
     "@t3-oss/env-core": "catalog:",
     "@tanstack/react-query": "catalog:",
     "@xystack/api": "workspace:*",
@@ -27,6 +28,7 @@
     "lucide-react": "^0.453.0",
     "react": "catalog:react18",
     "react-dom": "catalog:react18",
+    "react-hook-form": "^7.53.0",
     "tailwindcss": "catalog:",
     "typescript": "catalog:",
     "zod": "catalog:"

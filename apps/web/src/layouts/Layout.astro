@@ -1,12 +1,15 @@
 ---
+import { cn } from '@xystack/ui'
 import '@xystack/ui/base.css'
+import { Toaster } from '@xystack/ui/sonner'
 import Header from '~/components/header.astro'
 
 interface Props {
   title: string
+  hideHeader?: boolean
 }
 
-const { title } = Astro.props
+const { title, hideHeader = false } = Astro.props
 ---
 
 <!doctype html>
@@ -20,10 +23,11 @@ const { title } = Astro.props
     <title>{title}</title>
   </head>
   <body>
-    <Header />
-    <div class="h-[56px]"></div>
-    <main class="min-h-[calc(100vh-56px)] relative">
+    {!hideHeader && <Header />}
+    {!hideHeader && <div class="h-[56px]" />}
+    <main class={cn('relative', !hideHeader ? 'min-h-[calc(100vh-56px)]' : 'min-h-screen')}>
       <slot />
+      <Toaster client:only="react" />
     </main>
   </body>
 </html>

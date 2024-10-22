@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
 import { relations, sql } from 'drizzle-orm'
-import { sqliteTable } from 'drizzle-orm/sqlite-core'
+import { sqliteTable, uniqueIndex } from 'drizzle-orm/sqlite-core'
 import { createInsertSchema } from 'drizzle-zod'
 import { z } from 'zod'
 
@@ -8,42 +8,56 @@ import { z } from 'zod'
  * users
  * MARK: - Users
  */
-export const users = sqliteTable('users', (t) => ({
-  /**
-   * A unique identifier for the user.
-   */
-  id: t.text('id').primaryKey(),
-  /**
-   * The email of the user.
-   */
-  email: t.text('email'),
-  /**
-   * The username of the user.
-   */
-  username: t.text('username').notNull(),
-  /**
-   * The URL to the user's image.
-   */
-  imageUrl: t.text('image_url'),
-  /**
-   * The date and time when the user was last signed in.
-   */
-  lastSignInAt: t
-    .text('last_sign_in_at')
-    .default(sql`(current_timestamp)`)
-    .notNull(),
-  /**
-   * The date and time when the user was created.
-   */
-  createdAt: t
-    .text('created_at')
-    .default(sql`(current_timestamp)`)
-    .notNull(),
-  /**
-   * The date and time when the user was last updated.
-   */
-  updatedAt: t.text('updated_at').$onUpdateFn(() => sql`(current_timestamp)`),
-}))
+export const users = sqliteTable(
+  'users',
+  (t) => ({
+    /**
+     * A unique identifier for the user.
+     */
+    id: t.text('id').primaryKey(),
+    /**
+     * The email of the user.
+     */
+    email: t.text('email').unique(),
+    /**
+     * The username of the user.
+     */
+    username: t.text('username').notNull(),
+    /**
+     * The URL to the user's image.
+     */
+    imageUrl: t.text('image_url'),
+    /**
+     * The OTP code for the user.
+     */
+    otpCode: t.text('otp_code'),
+    /**
+     * The expiration time of the OTP code.
+     */
+    otpExpiresAt: t.text('otp_expires_at'),
+    /**
+     * The date and time when the user was last signed in.
+     */
+    lastSignInAt: t
+      .text('last_sign_in_at')
+      .default(sql`(current_timestamp)`)
+      .notNull(),
+    /**
+     * The date and time when the user was created.
+     */
+    createdAt: t
+      .text('created_at')
+      .default(sql`(current_timestamp)`)
+      .notNull(),
+    /**
+     * The date and time when the user was last updated.
+     */
+    updatedAt: t.text('updated_at').$onUpdateFn(() => sql`(current_timestamp)`),
+  }),
+  (table) => ({
+    emailUniqueIndex: uniqueIndex('emailUniqueIndex').on(sql`lower(${table.email})`),
+  }),
+)
 
 export type User = typeof users.$inferSelect
 

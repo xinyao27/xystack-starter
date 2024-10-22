@@ -7,8 +7,8 @@ import { Main } from '~/features/playground/main'
 
 <Layout title="Playground">
   <div class="hidden h-full flex-col md:flex">
-    <Title client:visible />
+    <Title client:only="react" />
     <Separator />
-    <Main client:only />
+    <Main client:only="react" />
   </div>
 </Layout>

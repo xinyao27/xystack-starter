@@ -1,14 +1,10 @@
 import { createEnv } from '@t3-oss/env-core'
 import { z } from 'zod'
-import { env as emailEnv } from '@xystack/email/env'
 
 export const env = createEnv({
-  extends: [emailEnv],
   clientPrefix: 'PUBLIC_',
   server: {
-    GITHUB_CLIENT_ID: z.string().min(1),
-    GITHUB_CLIENT_SECRET: z.string().min(1),
-    AUTH_SECRET: process.env.NODE_ENV === 'production' ? z.string().min(1) : z.string().min(1).optional(),
+    RESEND_API_KEY: z.string().min(1),
     NODE_ENV: z.enum(['development', 'production']).optional().default('development'),
   },
   client: {},
