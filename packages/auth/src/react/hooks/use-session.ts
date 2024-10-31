@@ -1,3 +1,5 @@
+'use client'
+
 import { useAuth } from './use-auth'
 import type { Session } from '../../types'
 import type { AuthContextValue } from '../context'
@@ -28,7 +30,7 @@ export function createUseSession(auth: AuthContextValue): UseSessionReturn {
  * @example
  * A simple example:
  *
- * import { useSession } from '@xystack/auth/astro'
+ * import { useSession } from '@xystack/auth/react'
  *
  * function Hello() {
  *   const { isSignedIn, session } = useSession();

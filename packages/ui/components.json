@@ -5,13 +5,12 @@
   "tsx": true,
   "tailwind": {
     "config": "./tailwind.config.ts",
-    "css": "unused.css",
+    "css": "./src/base.css",
     "baseColor": "zinc",
     "cssVariables": true
   },
   "aliases": {
     "utils": "@xystack/ui",
-    "components": "src/",
-    "ui": "src/"
+    "components": "src/"
   }
 }

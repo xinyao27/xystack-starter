@@ -1,3 +1,5 @@
+'use client'
+
 import { useAuth } from './use-auth'
 import type { AuthContextValue } from '../context'
 import type { User } from '../../types'
@@ -29,7 +31,7 @@ export function createUseUser(auth: AuthContextValue): UseUserReturn {
  * @example
  * A simple example:
  *
- * import { useUser } from '@xystack/auth/astro'
+ * import { useUser } from '@xystack/auth/react'
  *
  * function Hello() {
  *   const { isSignedIn, user } = useUser();

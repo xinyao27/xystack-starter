@@ -1,3 +1,5 @@
+'use client'
+
 import { atom, computed, onMount, task } from 'nanostores'
 import consola from 'consola'
 import { hc } from 'hono/client'
@@ -65,7 +67,7 @@ export const createAuthProvider = (baseUrl: string) => {
   return { defaultValue, getAuth }
 }
 
-const baseUrl = typeof window === 'undefined' ? 'http://localhost:4321' : window.location.origin
+const baseUrl = typeof window === 'undefined' ? 'http://localhost:3000' : window.location.origin
 const { defaultValue, getAuth } = createAuthProvider(baseUrl)
 export const $authStore = atom<AuthContextValue>(defaultValue)
 export const $sessionStore = computed($authStore, (auth) => auth?.session)

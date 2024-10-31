@@ -7,19 +7,19 @@
   "exports": {
     ".": "./src/index.ts",
     "./server": "./src/server/index.ts",
-    "./astro": "./src/astro/index.ts",
-    "./astro/middleware": "./src/astro/middleware.ts",
+    "./react": "./src/react/index.ts",
+    "./next/middleware": "./src/next/middleware.ts",
     "./env": "./get-env.ts"
   },
   "scripts": {
     "clean": "git clean -xdf .cache .turbo dist node_modules",
-    "lint": "eslint --fix",
-    "typecheck": "tsc --noEmit"
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit --emitDeclarationOnly false"
   },
   "dependencies": {
     "@lucia-auth/adapter-drizzle": "^1.1.0",
     "@nanostores/react": "catalog:",
-    "@t3-oss/env-core": "catalog:",
+    "@t3-oss/env-nextjs": "catalog:",
     "@xystack/db": "workspace:*",
     "@xystack/email": "workspace:*",
     "arctic": "catalog:",
@@ -28,8 +28,8 @@
     "hono": "catalog:",
     "lucia": "catalog:",
     "nanostores": "catalog:",
-    "react": "catalog:react18",
-    "react-dom": "catalog:react18",
+    "react": "catalog:react",
+    "react-dom": "catalog:react",
     "zod": "catalog:"
   },
   "devDependencies": {

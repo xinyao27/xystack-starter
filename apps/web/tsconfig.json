@@ -1,17 +1,28 @@
 {
   "extends": "@xystack/tsconfig/base.json",
   "compilerOptions": {
-    "jsx": "react-jsx",
-    "jsxImportSource": "react",
-    "baseUrl": ".",
+    "jsx": "preserve",
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
     "paths": {
       "~/*": [
         "./src/*"
       ]
-    }
+    },
+    "types": [
+      "@cloudflare/workers-types/2023-07-01"
+    ],
+    "isolatedModules": true
   },
   "include": [
-    "src"
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts"
   ],
   "exclude": [
     "node_modules"

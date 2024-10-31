@@ -1,4 +1,4 @@
-import { Button } from "@xystack/ui/button"
+import { Button } from '@xystack/ui/button'
 import {
   Dialog,
   DialogContent,
@@ -7,9 +7,9 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@xystack/ui/dialog"
-import { Input } from "@xystack/ui/input"
-import { Label } from "@xystack/ui/label"
+} from '@xystack/ui/dialog'
+import { Input } from '@xystack/ui/input'
+import { Label } from '@xystack/ui/label'
 
 export function PresetSave() {
   return (
@@ -21,14 +21,13 @@ export function PresetSave() {
         <DialogHeader>
           <DialogTitle>Save preset</DialogTitle>
           <DialogDescription>
-            This will save the current playground state as a preset which you
-            can access later or share with others.
+            This will save the current playground state as a preset which you can access later or share with others.
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">
           <div className="grid gap-2">
             <Label htmlFor="name">Name</Label>
-            <Input id="name" autoFocus />
+            <Input autoFocus id="name" />
           </div>
           <div className="grid gap-2">
             <Label htmlFor="description">Description</Label>

@@ -11,12 +11,12 @@
   },
   "scripts": {
     "clean": "git clean -xdf .cache .turbo dist node_modules",
-    "lint": "eslint --fix",
+    "lint": "eslint .",
     "typecheck": "tsc --noEmit --emitDeclarationOnly false",
     "ui-add": "pnpm dlx shadcn@latest add && prettier src --write --list-different"
   },
   "peerDependencies": {
-    "react": "catalog:react18",
+    "react": "catalog:react",
     "zod": "catalog:"
   },
   "dependencies": {
@@ -64,13 +64,13 @@
     "vaul": "^1.1.0"
   },
   "devDependencies": {
-    "@types/react": "catalog:react18",
+    "@types/react": "catalog:react",
     "@xystack/eslint-config": "workspace:*",
     "@xystack/prettier-config": "workspace:*",
     "@xystack/tsconfig": "workspace:*",
     "eslint": "catalog:",
     "prettier": "catalog:",
-    "react": "catalog:react18",
+    "react": "catalog:react",
     "typescript": "catalog:",
     "zod": "catalog:"
   },

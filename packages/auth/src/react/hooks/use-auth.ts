@@ -1,3 +1,5 @@
+'use client'
+
 import { useStore } from '@nanostores/react'
 import { $authStore } from '../stores'
 
@@ -7,7 +9,7 @@ import { $authStore } from '../stores'
  * @example
  * A simple example:
  *
- * import { useAuth } from '@xystack/auth/astro'
+ * import { useAuth } from '@xystack/auth/react'
  *
  * function Hello() {
  *   const auth = useAuth();

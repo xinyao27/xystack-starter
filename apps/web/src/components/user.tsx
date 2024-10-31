@@ -1,6 +1,8 @@
+'use client'
+
 import { Button, buttonVariants } from '@xystack/ui/button'
 import { cn } from '@xystack/ui'
-import { useUser } from '@xystack/auth/astro'
+import { useUser } from '@xystack/auth/react'
 import { Avatar, AvatarFallback, AvatarImage } from '@xystack/ui/avatar'
 import {
   DropdownMenu,
@@ -15,18 +17,18 @@ import {
 import type { User as UserType } from '@xystack/auth'
 
 interface UserProps {
-  userAstro?: UserType | null
+  userNext?: UserType | null
 }
 
-export function User({ userAstro }: UserProps) {
+export function User({ userNext }: UserProps) {
   const { isLoaded, isSignedIn, user } = useUser()
 
   if (!isLoaded) {
     return <div>Loading...</div>
   }
 
-  if (isSignedIn || userAstro) {
-    const _user = userAstro ?? user
+  if (isSignedIn || userNext) {
+    const _user = userNext ?? user
     return (
       <DropdownMenu>
         <DropdownMenuTrigger asChild>

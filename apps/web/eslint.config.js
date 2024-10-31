@@ -3,7 +3,7 @@ import baseConfig, { restrictEnvAccess } from '@xystack/eslint-config/base'
 /** @type {import('typescript-eslint').Config} */
 export default [
   {
-    ignores: ['.astro/**'],
+    ignores: ['build/**'],
   },
   ...baseConfig,
   ...restrictEnvAccess,

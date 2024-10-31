@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { useAuth } from '@xystack/auth/astro'
+import { useAuth } from '@xystack/auth/react'
 import { toast } from '@xystack/ui/sonner'
 import { cn } from '@xystack/ui'
 import { Button } from '@xystack/ui/button'
@@ -13,7 +13,7 @@ import { REGEXP_ONLY_DIGITS_AND_CHARS } from 'input-otp'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
-import { navigate } from 'astro:transitions/client'
+import { useRouter } from 'next/navigation'
 import { env } from '~/get-env'
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -30,6 +30,7 @@ const FormSchema = z.object({
 })
 
 export function EmailForm({ isLogin, className, ...props }: UserAuthFormProps) {
+  const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
   const [showCodeInput, setShowCodeInput] = useState(false)
   const auth = useAuth()
@@ -63,7 +64,7 @@ export function EmailForm({ isLogin, className, ...props }: UserAuthFormProps) {
       const res = await auth.verifyOtp({ email: data.email, otpCode: data.pin })
       if (res.error) throw new Error(res.error)
       if (res.data?.session) {
-        navigate('/')
+        router.push('/')
       }
     } catch (error: any) {
       toast.error(error.message || error || 'Something went wrong')

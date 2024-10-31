@@ -9,11 +9,11 @@
   },
   "scripts": {
     "clean": "git clean -xdf .cache .turbo node_modules",
-    "lint": "eslint --fix",
-    "typecheck": "tsc --noEmit"
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit --emitDeclarationOnly false"
   },
   "dependencies": {
-    "postcss": "^8.4.47",
+    "postcss": "catalog:",
     "tailwindcss": "catalog:",
     "tailwindcss-animate": "^1.0.7"
   },

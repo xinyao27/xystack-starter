@@ -1,4 +1,4 @@
-import { createEnv } from '@t3-oss/env-core'
+import { createEnv } from '@t3-oss/env-nextjs'
 import { z } from 'zod'
 
 export const env = createEnv({
@@ -9,6 +9,6 @@ export const env = createEnv({
     CLOUDFLARE_ACCOUNT_ID: z.string().min(1),
     NODE_ENV: z.enum(['development', 'production']).optional().default('development'),
   },
-  runtimeEnv: process.env,
+  experimental__runtimeEnv: process.env,
   skipValidation: process.env.NODE_ENV === 'production',
 })

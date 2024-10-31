@@ -1,11 +1,10 @@
-import { createEnv } from '@t3-oss/env-core'
+import { createEnv } from '@t3-oss/env-nextjs'
 import { env as authEnv } from '@xystack/auth/env'
 import { env as dbEnv } from '@xystack/db/env'
 import { z } from 'zod'
 
 export const env = createEnv({
   extends: [authEnv, dbEnv],
-  clientPrefix: 'PUBLIC_',
   shared: {
     NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
   },
@@ -16,14 +15,11 @@ export const env = createEnv({
   server: {},
   /**
    * Specify your client-side environment variables schema here.
-   * For them to be exposed to the client, prefix them with `PUBLIC_`.
+   * For them to be exposed to the client, prefix them with `NEXT_PUBLIC`.
    */
   client: {
-    // PUBLIC_CLIENTVAR: z.string(),
+    // NEXT_PUBLIC_CLIENTVAR: z.string(),
   },
-  runtimeEnvStrict: {
-    ...process.env,
-    ...(import.meta as any).env,
-  },
-  skipValidation: import.meta.env.PROD
+  experimental__runtimeEnv: process.env,
+  skipValidation: process.env.NODE_ENV === 'production',
 })

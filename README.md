@@ -11,9 +11,9 @@ It uses [Turborepo](https://turborepo.org) and contains:
 .vscode
   └─ Recommended extensions and settings for VSCode users
 apps
-  └─ astro
-      ├─ Astro 3
-      ├─ React 18
+  └─ web
+      ├─ NextJS 15
+      ├─ React 19
       ├─ Tailwind CSS
       └─ E2E Typesafe API Server & Client
 packages
