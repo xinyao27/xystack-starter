@@ -37,3 +37,6 @@ dist/
 
 # cloudflare
 .wrangler
+
+# Million
+.million
