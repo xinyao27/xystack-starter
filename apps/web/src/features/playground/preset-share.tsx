@@ -1,4 +1,4 @@
-import { CopyIcon } from '@radix-ui/react-icons'
+import { Clipboard } from 'lucide-react'
 import { Button } from '@xystack/ui/button'
 import { Input } from '@xystack/ui/input'
 import { Label } from '@xystack/ui/label'
@@ -31,7 +31,7 @@ export function PresetShare() {
           </div>
           <Button className="px-3" size="sm" type="submit">
             <span className="sr-only">Copy</span>
-            <CopyIcon className="h-4 w-4" />
+            <Clipboard className="h-4 w-4" />
           </Button>
         </div>
       </PopoverContent>

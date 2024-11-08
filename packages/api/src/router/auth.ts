@@ -29,7 +29,7 @@ const auth = new Hono<Env>()
     return c.json(res)
   })
 
-  .get('/logout', async (c) => {
+  .get('/signout', async (c) => {
     const authInstance = c.get('auth')
 
     const res = await authInstance.signOut()
@@ -37,10 +37,22 @@ const auth = new Hono<Env>()
       return c.json({ error: res.error || 'Failed to sign out' }, 400)
     }
 
-    return c.redirect('/login')
+    return c.redirect('/')
   })
 
-  .get('/login/otp', zValidator('query', z.object({ email: z.string().email() })), async (c) => {
+  .post('/signup', zValidator('json', z.object({ email: z.string().email() })), async (c) => {
+    const authInstance = c.get('auth')
+    const { email } = c.req.valid('json')
+
+    const res = await authInstance.signUp({ email })
+    if (res.error || !res.data) {
+      return c.json({ error: res.error || 'Failed to sign up' }, 400)
+    }
+
+    return c.json(res)
+  })
+
+  .get('/signin/otp', zValidator('query', z.object({ email: z.string().email() })), async (c) => {
     const authInstance = c.get('auth')
     const { email } = c.req.valid('query')
 
@@ -53,7 +65,7 @@ const auth = new Hono<Env>()
   })
 
   .post(
-    '/login/otp/verify',
+    '/signin/otp/verify',
     zValidator('json', z.object({ email: z.string().email(), otpCode: z.string() })),
     async (c) => {
       const authInstance = c.get('auth')
@@ -68,7 +80,7 @@ const auth = new Hono<Env>()
     },
   )
 
-  .get('/login/otp/resend', zValidator('query', z.object({ email: z.string().email() })), async (c) => {
+  .get('/signin/otp/resend', zValidator('query', z.object({ email: z.string().email() })), async (c) => {
     const authInstance = c.get('auth')
     const { email } = c.req.valid('query')
 
@@ -81,7 +93,7 @@ const auth = new Hono<Env>()
   })
 
   .get(
-    '/login/oauth',
+    '/signin/oauth',
     zValidator(
       'query',
       z.object({

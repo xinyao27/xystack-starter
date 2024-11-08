@@ -1,6 +1,5 @@
 import { fileURLToPath } from 'node:url'
 import { createJiti } from 'jiti'
-import MillionLint from '@million/lint'
 
 // Import env files to validate at build time. Use jiti so we can load .ts files in here.
 createJiti(fileURLToPath(import.meta.url)).import('./src/get-env')
@@ -17,4 +16,4 @@ const config = {
   typescript: { ignoreBuildErrors: true },
 }
 
-export default MillionLint.next({ rsc: true })(config)
+export default config

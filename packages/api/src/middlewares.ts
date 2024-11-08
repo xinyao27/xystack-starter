@@ -2,10 +2,13 @@ import { createMiddleware } from 'hono/factory'
 import { createDBClient } from '@xystack/db/client'
 import { AuthInstance, createLucia } from '@xystack/auth/server'
 import { getCookie, setCookie } from 'hono/cookie'
+import { getCloudflareContext } from '@opennextjs/cloudflare'
 
 export const db = () =>
   createMiddleware(async (c, next) => {
-    const db = createDBClient(c.env.DB)
+    const DB = (await getCloudflareContext()).env.DB
+    if (!DB) throw new Error('DB is not defined')
+    const db = createDBClient(DB)
     c.set('db', db)
     await next()
   })

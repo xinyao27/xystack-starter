@@ -17,7 +17,7 @@ import { useRouter } from 'next/navigation'
 import { env } from '~/get-env'
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {
-  isLogin: boolean
+  isSignIn: boolean
 }
 
 const FormSchema = z.object({
@@ -29,7 +29,7 @@ const FormSchema = z.object({
   }),
 })
 
-export function EmailForm({ isLogin, className, ...props }: UserAuthFormProps) {
+export function EmailForm({ isSignIn, className, ...props }: UserAuthFormProps) {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
   const [showCodeInput, setShowCodeInput] = useState(false)
@@ -47,8 +47,13 @@ export function EmailForm({ isLogin, className, ...props }: UserAuthFormProps) {
     if (showCodeInput) return handleCode(data)
     setIsLoading(true)
     try {
-      const res = await auth.signInWithOtp({ email: data.email })
-      if (res.error) throw new Error(res.error)
+      if (isSignIn) {
+        const res = await auth.signInWithOtp({ email: data.email })
+        if (res.error) throw new Error(res.error)
+      } else {
+        const res = await auth.signUp({ email: data.email })
+        if (res.error) throw new Error(res.error)
+      }
 
       setShowCodeInput(true)
     } catch (error: any) {
@@ -163,7 +168,7 @@ export function EmailForm({ isLogin, className, ...props }: UserAuthFormProps) {
               </>
             ) : (
               <Button loading={isLoading} onClick={() => onSubmit(form.getValues())}>
-                Sign in with Email
+                {isSignIn ? 'Sign in' : 'Sign up'} with Email
               </Button>
             )}
           </div>

@@ -1,4 +1,4 @@
-import { CounterClockwiseClockIcon } from '@radix-ui/react-icons'
+import { History } from 'lucide-react'
 import { Button } from '@xystack/ui/button'
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@xystack/ui/hover-card'
 import { Label } from '@xystack/ui/label'
@@ -87,7 +87,7 @@ export function Main() {
                   <Button>Submit</Button>
                   <Button variant="secondary">
                     <span className="sr-only">Show history</span>
-                    <CounterClockwiseClockIcon className="h-4 w-4" />
+                    <History className="h-4 w-4" />
                   </Button>
                 </div>
               </div>
@@ -105,7 +105,7 @@ export function Main() {
                   <Button>Submit</Button>
                   <Button variant="secondary">
                     <span className="sr-only">Show history</span>
-                    <CounterClockwiseClockIcon className="h-4 w-4" />
+                    <History className="h-4 w-4" />
                   </Button>
                 </div>
               </div>
@@ -133,7 +133,7 @@ export function Main() {
                   <Button>Submit</Button>
                   <Button variant="secondary">
                     <span className="sr-only">Show history</span>
-                    <CounterClockwiseClockIcon className="h-4 w-4" />
+                    <History className="h-4 w-4" />
                   </Button>
                 </div>
               </div>

@@ -1,7 +1,7 @@
 import { GitHub } from 'arctic'
 import { env } from '../../get-env'
 
-export const github = new GitHub(env.GITHUB_CLIENT_ID, env.GITHUB_CLIENT_SECRET)
+export const github = new GitHub(env.GITHUB_CLIENT_ID, env.GITHUB_CLIENT_SECRET, env.REDIRECT_URL)
 
 export interface GitHubUser {
   login: string

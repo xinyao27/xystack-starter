@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { ChevronRightIcon, DotsHorizontalIcon } from '@radix-ui/react-icons'
+import { ChevronRight, Ellipsis } from 'lucide-react'
 import { Slot } from '@radix-ui/react-slot'
 
 import { cn } from '.'
@@ -61,7 +61,7 @@ BreadcrumbPage.displayName = 'BreadcrumbPage'
 
 const BreadcrumbSeparator = ({ children, className, ...props }: React.ComponentProps<'li'>) => (
   <li aria-hidden="true" className={cn('[&>svg]:size-3.5', className)} role="presentation" {...props}>
-    {children ?? <ChevronRightIcon />}
+    {children ?? <ChevronRight className="h-4 w-4" />}
   </li>
 )
 BreadcrumbSeparator.displayName = 'BreadcrumbSeparator'
@@ -73,7 +73,7 @@ const BreadcrumbEllipsis = ({ className, ...props }: React.ComponentProps<'span'
     role="presentation"
     {...props}
   >
-    <DotsHorizontalIcon className="h-4 w-4" />
+    <Ellipsis className="h-4 w-4" />
     <span className="sr-only">More</span>
   </span>
 )

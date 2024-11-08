@@ -1,7 +1,7 @@
 'use client'
 
 import * as React from 'react'
-import { BookOpen, Bot, Command, Frame, LifeBuoy, Map, PieChart, Send, Settings2, SquareTerminal } from 'lucide-react'
+import { BookOpen, Bot, Command, Frame, Map, PieChart, Settings2, SquareTerminal } from 'lucide-react'
 import {
   Sidebar,
   SidebarContent,
@@ -10,38 +10,21 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarTrigger,
 } from '@xystack/ui/sidebar'
+import { cn } from '@xystack/ui'
 import { NavMain } from './nav/nav-main'
 import { NavProjects } from './nav/nav-projects'
 import { NavSecondary } from './nav/nav-secondary'
 import { NavUser } from './nav/nav-user'
 
 const data = {
-  user: {
-    name: 'shadcn',
-    email: 'm@example.com',
-    avatar: '/avatars/shadcn.jpg',
-  },
   navMain: [
     {
       title: 'Playground',
-      url: '#',
+      url: '/playground',
       icon: SquareTerminal,
       isActive: true,
-      items: [
-        {
-          title: 'History',
-          url: '#',
-        },
-        {
-          title: 'Starred',
-          url: '#',
-        },
-        {
-          title: 'Settings',
-          url: '#',
-        },
-      ],
     },
     {
       title: 'Models',
@@ -109,18 +92,6 @@ const data = {
       ],
     },
   ],
-  navSecondary: [
-    {
-      title: 'Support',
-      url: '#',
-      icon: LifeBuoy,
-    },
-    {
-      title: 'Feedback',
-      url: '#',
-      icon: Send,
-    },
-  ],
   projects: [
     {
       name: 'Design Engineering',
@@ -146,27 +117,35 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton asChild size="lg">
-              <a href="#">
-                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                  <Command className="size-4" />
-                </div>
-                <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">Acme Inc</span>
-                  <span className="truncate text-xs">Enterprise</span>
-                </div>
-              </a>
-            </SidebarMenuButton>
+            <div className="flex items-center gap-2">
+              <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
+                <Command className="size-4" />
+              </div>
+              <div className="grid flex-1 text-left text-sm leading-tight">
+                <span className="truncate font-semibold">Acme Inc</span>
+                <span className="truncate text-xs">Enterprise</span>
+              </div>
+
+              <SidebarTrigger
+                variant="ghost"
+                className={cn(
+                  'opacity-0 transition-opacity hover:!opacity-100 group-hover:opacity-60',
+                  '[.group[data-state=collapsed]_&]:fixed [.group[data-state=collapsed]_&]:-left-2 [.group[data-state=collapsed]_&]:border [.group[data-state=collapsed]_&]:bg-secondary [.group[data-state=collapsed]_&]:opacity-60',
+                )}
+              />
+            </div>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
+
       <SidebarContent>
         <NavMain items={data.navMain} />
         <NavProjects projects={data.projects} />
-        <NavSecondary className="mt-auto" items={data.navSecondary} />
+        <NavSecondary className="mt-auto" />
       </SidebarContent>
+
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser />
       </SidebarFooter>
     </Sidebar>
   )

@@ -1,4 +1,9 @@
 {
   "extends": "@xystack/style-guide/typescript",
-  "exclude": ["node_modules", "build", "dist", ".next"]
+  "exclude": [
+    "node_modules",
+    "build",
+    "dist",
+    ".next"
+  ]
 }

@@ -13,6 +13,7 @@ export default env.LOCAL_DB_PATH
       ...baseConfig,
       dbCredentials: {
         url: env.LOCAL_DB_PATH,
+        wranglerConfigPath: '../../apps/web/wrangler.toml',
       },
     }
   : {

@@ -12,6 +12,7 @@ import { github } from './providers'
 import type { Return } from '../../../api/src/root'
 import type { GitHubUser } from './providers'
 import type {
+  CreateUserParams,
   OAuthCallbackParams,
   OAuthCallbackReturn,
   ResendOtpParams,
@@ -21,6 +22,8 @@ import type {
   SignInWithOAuthReturn,
   SignInWithOtpParams,
   SignInWithOtpReturn,
+  SignUpParams,
+  SignUpReturn,
   User,
   VerifyOtpParams,
   VerifyOtpReturn,
@@ -121,6 +124,35 @@ export class AuthInstance {
     }
   }
 
+  public createUser = async ({ email, identity }: CreateUserParams): Promise<Return<User>> => {
+    try {
+      const db = this.#db
+
+      const userId = generateIdFromEntropySize(10) // 16 characters long
+
+      const user = createUserSchema.parse({
+        id: userId,
+        email,
+        username: identity?.username ?? email.split('@')[0],
+        imageUrl: identity?.imageUrl,
+      })
+      const [returnUser] = await db.insert(users).values(user).returning()
+
+      if (identity) {
+        await db.insert(identities).values(
+          createIdentitySchema.parse({
+            ...identity,
+            userId,
+          }),
+        )
+      }
+
+      return this.#createReturn<User>(returnUser, null)
+    } catch (error) {
+      return this.#createReturn<User>(null, error as Error)
+    }
+  }
+
   public signOut = async (): Promise<Return<boolean>> => {
     try {
       const lucia = this.lucia
@@ -171,22 +203,24 @@ export class AuthInstance {
     }
   }
 
-  public signInWithOtp = async ({ email }: SignInWithOtpParams): Promise<Return<SignInWithOtpReturn>> => {
+  public signUp = async ({ email }: SignUpParams): Promise<Return<SignUpReturn>> => {
     try {
       const user = await this.#db.query.users.findFirst({
         where: eq(users.email, email),
       })
-      if (!user) {
-        throw new Error('No user, please sign up first.')
+      if (user) {
+        throw new Error('User already exists.')
       }
 
-      if (!user.otpExpiresAt || isAfter(new Date(), user.otpExpiresAt)) {
-        await this.#createOtpAndSendEmail(email, user)
+      const newUser = await this.createUser({ email })
+      if (newUser.error || !newUser.data) {
+        throw new Error(newUser.error || 'Failed to create user')
       }
+      await this.#createOtpAndSendEmail(email, newUser.data)
 
-      return this.#createReturn<SignInWithOtpReturn>({ email }, null)
+      return this.#createReturn<SignUpReturn>(newUser.data, null)
     } catch (error) {
-      return this.#createReturn<SignInWithOtpReturn>(null, error as Error)
+      return this.#createReturn<SignUpReturn>(null, error as Error)
     }
   }
 
@@ -238,6 +272,25 @@ export class AuthInstance {
     }
   }
 
+  public signInWithOtp = async ({ email }: SignInWithOtpParams): Promise<Return<SignInWithOtpReturn>> => {
+    try {
+      const user = await this.#db.query.users.findFirst({
+        where: eq(users.email, email),
+      })
+      if (!user) {
+        throw new Error('No user, please sign up first.')
+      }
+
+      if (!user.otpExpiresAt || isAfter(new Date(), user.otpExpiresAt)) {
+        await this.#createOtpAndSendEmail(email, user)
+      }
+
+      return this.#createReturn<SignInWithOtpReturn>({ email }, null)
+    } catch (error) {
+      return this.#createReturn<SignInWithOtpReturn>(null, error as Error)
+    }
+  }
+
   public signInWithOAuth = async ({
     provider,
     options,
@@ -247,9 +300,7 @@ export class AuthInstance {
 
       let url: URL | null = null
       if (provider === OAuthProvider.GITHUB) {
-        url = await github.createAuthorizationURL(state, {
-          scopes: options.scopes,
-        })
+        url = await github.createAuthorizationURL(state, options.scopes ?? [])
       }
 
       if (!url) {
@@ -302,7 +353,7 @@ export class AuthInstance {
 
       const githubUserResponse = await fetch('https://api.github.com/user', {
         headers: {
-          Authorization: `Bearer ${tokens.accessToken}`,
+          Authorization: `Bearer ${tokens.accessToken()}`,
         },
       })
       const githubUser: GitHubUser = await githubUserResponse.json()
@@ -325,27 +376,44 @@ export class AuthInstance {
         )
       }
 
-      const userId = generateIdFromEntropySize(10) // 16 characters long
-
-      const user = createUserSchema.parse({
-        id: userId,
-        username: githubUser.login,
-        email: githubUser.email,
-        imageUrl: githubUser.avatar_url,
+      let user = await this.#db.query.users.findFirst({
+        where: eq(users.email, githubUser.email),
       })
-      await db.insert(users).values(user)
+      if (!user) {
+        // If there is no user, create one (include identity)
+        const newUser = await this.createUser({
+          email: githubUser.email,
+          identity: {
+            id: githubUser.id,
+            provider: OAuthProvider.GITHUB,
+            identityId: githubUser.id.toString(),
+            email: githubUser.email,
+            username: githubUser.login,
+            imageUrl: githubUser.avatar_url,
+            metadata: githubUser,
+          },
+        })
+        if (newUser.error || !newUser.data) {
+          throw new Error(newUser.error || 'Failed to create user')
+        }
+        user = newUser.data
+      } else {
+        // If there is already a user but no identity, create one
+        await db.insert(identities).values(
+          createIdentitySchema.parse({
+            userId: user.id,
+            id: githubUser.id,
+            provider: OAuthProvider.GITHUB,
+            identityId: githubUser.id.toString(),
+            email: githubUser.email,
+            username: githubUser.login,
+            imageUrl: githubUser.avatar_url,
+            metadata: githubUser,
+          }),
+        )
+      }
 
-      const identity = createIdentitySchema.parse({
-        provider: OAuthProvider.GITHUB,
-        identityId: githubUser.id.toString(),
-        userId,
-        email: githubUser.email,
-        username: githubUser.login,
-        imageUrl: githubUser.avatar_url,
-        metadata: githubUser,
-      })
-      await db.insert(identities).values(identity)
-
+      const userId = user.id
       const session = await lucia.createSession(userId, {})
       const sessionCookie = lucia.createSessionCookie(session.id)
       this.#cookieHandler.setCookie(sessionCookie.name, sessionCookie.value, sessionCookie.attributes)

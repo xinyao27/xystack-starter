@@ -1,5 +1,5 @@
 import type { Session as LuciaSession, User as LuciaUser } from 'lucia'
-import type { User as DbUser } from '@xystack/db'
+import type { User as DbUser, Identity } from '@xystack/db'
 
 export interface Auth {
   sessionId?: string
@@ -16,15 +16,9 @@ export enum OAuthProvider {
   GITHUB = 'github',
 }
 
-export interface SignInWithOtpParams {
+export interface CreateUserParams {
   email: string
-  options?: {
-    redirectTo?: string
-  }
-}
-
-export interface SignInWithOtpReturn {
-  email: string
+  identity?: Omit<Identity, 'userId' | 'createdAt' | 'updatedAt' | 'lastSignInAt'>
 }
 
 export interface VerifyOtpParams {
@@ -42,6 +36,23 @@ export interface ResendOtpParams {
 }
 
 export interface ResendOtpReturn {
+  email: string
+}
+
+export interface SignUpParams {
+  email: string
+}
+
+export type SignUpReturn = User
+
+export interface SignInWithOtpParams {
+  email: string
+  options?: {
+    redirectTo?: string
+  }
+}
+
+export interface SignInWithOtpReturn {
   email: string
 }
 

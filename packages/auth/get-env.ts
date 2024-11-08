@@ -5,6 +5,7 @@ import { env as emailEnv } from '@xystack/email/env'
 export const env = createEnv({
   extends: [emailEnv],
   server: {
+    REDIRECT_URL: z.string().min(1),
     GITHUB_CLIENT_ID: z.string().min(1),
     GITHUB_CLIENT_SECRET: z.string().min(1),
     AUTH_SECRET: process.env.NODE_ENV === 'production' ? z.string().min(1) : z.string().min(1).optional(),

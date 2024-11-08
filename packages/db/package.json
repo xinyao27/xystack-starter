@@ -15,18 +15,15 @@
     "clean": "git clean -xdf .cache .turbo dist node_modules",
     "lint": "eslint .",
     "push": "pnpm with-env drizzle-kit push",
-    "studio": "LOCAL_DB_PATH=$(find ../../.wrangler/state/v3/d1/miniflare-D1DatabaseObject -type f -name '*.sqlite' -print -quit) pnpm with-env drizzle-kit studio",
+    "studio": "LOCAL_DB_PATH=$(find ../../apps/web/.wrangler/state/v3/d1/miniflare-D1DatabaseObject -type f -name '*.sqlite' -print -quit) pnpm with-env drizzle-kit studio",
     "typecheck": "tsc --noEmit --emitDeclarationOnly false",
     "with-env": "dotenv -e ../../.env --",
-    "cf-typegen": "wrangler types",
     "db:push": "pnpm with-env drizzle-kit push",
     "db:pull": "pnpm with-env drizzle-kit pull",
-    "db:generate": "pnpm with-env drizzle-kit generate",
-    "db:migrate:local": "wrangler d1 migrations apply xystack --local",
-    "db:migrate:prod": "wrangler d1 migrations apply xystack --remote"
+    "db:generate": "pnpm with-env drizzle-kit generate"
   },
   "dependencies": {
-    "drizzle-orm": "^0.34.0",
+    "drizzle-orm": "^0.36.0",
     "drizzle-zod": "^0.5.1",
     "zod": "catalog:"
   },
@@ -34,9 +31,9 @@
     "@xystack/eslint-config": "workspace:*",
     "@xystack/prettier-config": "workspace:*",
     "@xystack/tsconfig": "workspace:*",
-    "better-sqlite3": "^11.3.0",
+    "better-sqlite3": "^11.5.0",
     "dotenv-cli": "^7.4.2",
-    "drizzle-kit": "^0.25.0",
+    "drizzle-kit": "^0.27.1",
     "eslint": "catalog:",
     "prettier": "catalog:",
     "typescript": "catalog:"

@@ -133,7 +133,7 @@ export const identities = sqliteTable('identities', (t) => ({
   /**
    * The metadata for the identity.
    */
-  metadata: t.text('metadata', { mode: 'json' }).$type<Record<string, unknown>>().notNull(),
+  metadata: t.text('metadata', { mode: 'json' }).$type<Record<string, any>>().notNull(),
   /**
    * The date and time when the user was last signed in (oauth only).
    */

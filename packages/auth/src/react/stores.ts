@@ -3,6 +3,7 @@
 import { atom, computed, onMount, task } from 'nanostores'
 import consola from 'consola'
 import { hc } from 'hono/client'
+import type { Session, User } from '../types'
 import type { AuthContextValue } from './context'
 import type { AppType } from '../../../api/src/root'
 
@@ -10,56 +11,89 @@ export const createAuthProvider = (baseUrl: string) => {
   const client = hc<AppType>(baseUrl)
 
   const defaultValue = {
+    signUp: async (params) => {
+      consola.info('AuthProvider signUp', params)
+      const res = await client.api.auth.signup.$post({ json: params })
+      return res.json()
+    },
     signInWithOtp: async (params) => {
-      const res = await client.api.auth.login.otp.$get({ query: params })
+      consola.info('AuthProvider signInWithOtp', params)
+      const res = await client.api.auth.signin.otp.$get({ query: params })
       return res.json()
     },
     verifyOtp: async (params) => {
-      const res = await client.api.auth.login.otp.verify.$post({ json: params })
-      return res.json()
+      consola.info('AuthProvider verifyOtp', params)
+      const res = await client.api.auth.signin.otp.verify.$post({ json: params })
+      const result = await res.json()
+      await defaultValue.refreshSession()
+      return result
     },
     resendOtp: async (params) => {
-      const res = await client.api.auth.login.otp.resend.$get({ query: params })
+      consola.info('AuthProvider resendOtp', params)
+      const res = await client.api.auth.signin.otp.resend.$get({ query: params })
       return res.json()
     },
     signInWithOAuth: async (params) => {
-      const res = await client.api.auth.login.oauth.$get({ query: params })
+      consola.info('AuthProvider signInWithOAuth', params)
+      const res = await client.api.auth.signin.oauth.$get({ query: params })
       return res.json()
     },
     signOut: async () => {
-      await client.api.auth.logout.$get()
+      consola.info('AuthProvider signOut')
+      await client.api.auth.signout.$get()
+      await defaultValue.refreshSession()
+    },
+    refreshSession: async () => {
+      consola.info('AuthProvider refreshSession')
+      for await (const value of getAuth()) {
+        // eslint-disable-next-line @typescript-eslint/no-use-before-define
+        $authStore.set({
+          // eslint-disable-next-line @typescript-eslint/no-use-before-define
+          ...$authStore.get(),
+          ...value,
+        })
+      }
     },
   } as AuthContextValue
 
   async function* getAuth() {
+    let sessionObject: Session | null = null
+    let userObject: User | null = null
+
     const sessionRes = await client.api.auth.session.$get()
     if (sessionRes.ok) {
       const session = await sessionRes.json()
       if (session.data) {
+        sessionObject = {
+          id: session.data.id,
+          expiresAt: new Date(session.data.expiresAt),
+          fresh: session.data.fresh,
+          userId: session.data.userId,
+        }
         yield {
-          session: {
-            id: session.data.id,
-            expiresAt: new Date(session.data.expiresAt),
-            fresh: session.data.fresh,
-            userId: session.data.userId,
-          },
+          session: sessionObject,
+          user: userObject,
         }
       }
 
       const userRes = await client.api.auth.user.$get()
       if (userRes.ok) {
         const user = await userRes.json()
+        userObject = user.data
         yield {
-          user: user.data,
+          session: sessionObject,
+          user: userObject,
         }
       } else {
         yield {
-          user: null,
+          session: sessionObject,
+          user: userObject,
         }
       }
     } else {
       yield {
-        session: null,
+        session: sessionObject,
+        user: userObject,
       }
     }
   }

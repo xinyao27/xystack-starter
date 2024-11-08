@@ -1,7 +1,7 @@
 'use client'
 
 import * as React from 'react'
-import { CaretSortIcon, CheckIcon } from '@radix-ui/react-icons'
+import { Check, ChevronDown } from 'lucide-react'
 import { cn } from '@xystack/ui'
 import { Button } from '@xystack/ui/button'
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@xystack/ui/command'
@@ -28,7 +28,7 @@ export function PresetSelector({ presets, ...props }: PresetSelectorProps) {
           variant="outline"
         >
           {selectedPreset ? selectedPreset.name : 'Load a preset...'}
-          <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+          <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[300px] p-0">
@@ -46,7 +46,7 @@ export function PresetSelector({ presets, ...props }: PresetSelectorProps) {
                   }}
                 >
                   {preset.name}
-                  <CheckIcon
+                  <Check
                     className={cn('ml-auto h-4 w-4', selectedPreset?.id === preset.id ? 'opacity-100' : 'opacity-0')}
                   />
                 </CommandItem>

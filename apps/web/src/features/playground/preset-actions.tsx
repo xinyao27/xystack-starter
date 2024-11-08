@@ -2,7 +2,7 @@
 
 import * as React from 'react'
 import { Dialog } from '@radix-ui/react-dialog'
-import { DotsHorizontalIcon } from '@radix-ui/react-icons'
+import { Ellipsis } from 'lucide-react'
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -35,7 +35,7 @@ export function PresetActions() {
         <DropdownMenuTrigger asChild>
           <Button variant="secondary">
             <span className="sr-only">Actions</span>
-            <DotsHorizontalIcon className="h-4 w-4" />
+            <Ellipsis className="h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">

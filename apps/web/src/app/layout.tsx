@@ -1,6 +1,9 @@
 import { Inter } from 'next/font/google'
+import { ThemeProvider } from '@xystack/ui/theme'
+import { Toaster } from '@xystack/ui/sonner'
 import type { Metadata } from 'next'
-import { Layout } from '~/layouts/layout'
+
+import '@xystack/ui/base.css'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -17,7 +20,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <Layout>{children}</Layout>
+        <ThemeProvider enableSystem attribute="class" defaultTheme="system">
+          {children}
+
+          <Toaster />
+        </ThemeProvider>
       </body>
     </html>
   )
